@@ -25,6 +25,13 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # Storage Abstraction Settings
+    STORAGE_PROVIDER: str = "local"  # 'local' or 's3'
+    STORAGE_DIR: str = "uploads"
+    MAX_FILE_SIZE_MB: int = 10
+    ALLOWED_IMAGE_MIMES: List[str] = ["image/jpeg", "image/png", "image/webp"]
+    ALLOWED_IMAGE_EXTENSIONS: List[str] = [".jpg", ".jpeg", ".png", ".webp"]
+
     # CORS Configuration
     CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:5173",

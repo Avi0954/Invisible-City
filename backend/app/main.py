@@ -1,6 +1,9 @@
+import os
+from pathlib import Path
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.logging import logger
 from app.core.exceptions import (
@@ -16,6 +19,8 @@ from app.api.v1.router import api_router
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown event handling."""
     logger.info(f"Starting {settings.PROJECT_NAME} in environment: {settings.ENVIRONMENT}")
+    # Ensure local upload storage directory exists
+    Path(settings.STORAGE_DIR).mkdir(parents=True, exist_ok=True)
     yield
     logger.info(f"Shutting down {settings.PROJECT_NAME}")
 
@@ -48,6 +53,11 @@ app.add_exception_handler(Exception, unhandled_exception_handler)
 
 # Include API v1 Router
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# Mount static directory for uploaded media in local environment
+uploads_dir = Path(settings.STORAGE_DIR)
+uploads_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 
 @app.get("/", include_in_schema=False)

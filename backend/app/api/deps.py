@@ -1,5 +1,5 @@
 import uuid
-from typing import List
+from typing import List, Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -64,6 +64,31 @@ async def get_current_user(
         )
         
     return user
+
+
+async def get_optional_current_user(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security_scheme),
+    db: Session = Depends(get_db)
+) -> Optional[User]:
+    """Dependency retrieving authenticated user if Bearer header is present, or None if anonymous."""
+    if not credentials:
+        return None
+    try:
+        token = credentials.credentials
+        payload = decode_token(token, settings.JWT_SECRET_KEY)
+        if payload.get("type") != "access":
+            return None
+        user_id_str = payload.get("sub")
+        if not user_id_str:
+            return None
+        user_id = uuid.UUID(user_id_str)
+        repo = UserRepository(db)
+        user = repo.get_by_id(user_id)
+        if user and user.is_active:
+            return user
+        return None
+    except Exception:
+        return None
 
 
 def require_roles(allowed_roles: List[UserRole]):

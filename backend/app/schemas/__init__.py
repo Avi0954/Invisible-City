@@ -1,6 +1,13 @@
 from app.schemas.health import HealthResponse
 from app.schemas.user import UserCreate, UserLogin, UserResponse, UserBase
 from app.schemas.token import TokenResponse, TokenRefreshRequest
+from app.schemas.report import (
+    ReportCreate,
+    ReportUpdate,
+    ReportResponse,
+    ReportListResponse,
+    ReportMediaResponse
+)
 
 __all__ = [
     "HealthResponse",
@@ -9,5 +16,10 @@ __all__ = [
     "UserResponse",
     "UserBase",
     "TokenResponse",
-    "TokenRefreshRequest"
+    "TokenRefreshRequest",
+    "ReportCreate",
+    "ReportUpdate",
+    "ReportResponse",
+    "ReportListResponse",
+    "ReportMediaResponse"
 ]

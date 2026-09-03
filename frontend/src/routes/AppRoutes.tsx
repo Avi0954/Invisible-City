@@ -6,6 +6,7 @@ import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
 import { ReportPage } from '../pages/ReportPage';
 import { MyReportsPage } from '../pages/MyReportsPage';
+import { ReportDetailPage } from '../pages/ReportDetailPage';
 import { MapPage } from '../pages/MapPage';
 import { AdminPage } from '../pages/AdminPage';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -19,6 +20,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="map" element={<MapPage />} />
+        <Route path="reports/:id" element={<ReportDetailPage />} />
 
         {/* Authenticated Citizen / General User Protected Routes */}
         <Route element={<ProtectedRoute />}>

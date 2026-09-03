@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime
 from sqlalchemy import String, Text, Float, Integer, DateTime, ForeignKey, Column
@@ -9,6 +10,8 @@ try:
     from geoalchemy2 import Geometry
 except ImportError:
     Geometry = None
+
+use_postgis = Geometry is not None and os.getenv("ENVIRONMENT") != "testing"
 
 
 class Hotspot(Base):
@@ -22,7 +25,7 @@ class Hotspot(Base):
     
     center_latitude = Column(Float, nullable=False)
     center_longitude = Column(Float, nullable=False)
-    geometry = Column(Geometry("POINT", srid=4326) if Geometry else Text, nullable=True)
+    geometry = Column(Geometry("POINT", srid=4326) if use_postgis else Text, nullable=True)
     report_count = Column(Integer, default=1, nullable=False)
     
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

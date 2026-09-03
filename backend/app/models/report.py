@@ -1,3 +1,4 @@
+import os
 import uuid
 import enum
 from datetime import datetime
@@ -48,6 +49,11 @@ class VerificationStatus(str, enum.Enum):
     REJECTED = "REJECTED"
 
 
+# Use PostGIS Geometry in Postgres, standard Text/WKT in testing/SQLite
+use_postgis = Geometry is not None and os.getenv("ENVIRONMENT") != "testing"
+use_pgvector = Vector is not None and os.getenv("ENVIRONMENT") != "testing"
+
+
 class Report(Base):
     __tablename__ = "reports"
 
@@ -61,12 +67,12 @@ class Report(Base):
     
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    geometry = Column(Geometry("POINT", srid=4326) if Geometry else Text, nullable=True)
+    geometry = Column(Geometry("POINT", srid=4326) if use_postgis else Text, nullable=True)
     address = Column(Text, nullable=True)
     
     ai_confidence = Column(Float, nullable=True)
     verification_status = Column(Enum(VerificationStatus, name="verificationstatus"), default=VerificationStatus.UNVERIFIED, nullable=False)
-    embedding = Column(Vector(1536) if Vector else JSON, nullable=True)
+    embedding = Column(Vector(1536) if use_pgvector else JSON, nullable=True)
     
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
