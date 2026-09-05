@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useMapReports } from '../hooks/useMapReports';
+import { useHotspots } from '../hooks/useIntelligence';
 import { MapReportItem, MapQueryParams } from '../types/map';
 import { ReportCategory, ReportSeverity, ReportStatus } from '../types/report';
 import {
@@ -103,6 +104,7 @@ export const MapPage: React.FC = () => {
   const [severity, setSeverity] = useState<string>('');
   const [reportStatus, setReportStatus] = useState<string>('');
   const [dateFilter, setDateFilter] = useState<string>('all');
+  const [showHotspots, setShowHotspots] = useState<boolean>(true);
 
   // Initial params
   const initialParams: MapQueryParams = {
@@ -114,6 +116,7 @@ export const MapPage: React.FC = () => {
   };
 
   const { data, isLoading, isError, setParams, isFetching } = useMapReports(initialParams);
+  const { data: hotspotsData } = useHotspots({ status: 'ACTIVE' });
 
   // Handle bounds update from map move/zoom
   const handleBoundsChange = useCallback(
@@ -183,6 +186,18 @@ export const MapPage: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowHotspots(!showHotspots)}
+            className={`flex items-center space-x-1.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-colors ${
+              showHotspots
+                ? 'border-amber-800 bg-amber-950/80 text-amber-300'
+                : 'border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800'
+            }`}
+          >
+            <Sparkles className="h-4 w-4 text-amber-400" />
+            <span>Hotspot Layer ({hotspotsData?.count ?? 0})</span>
+          </button>
+
           <button
             onClick={handleCurrentLocation}
             className="flex items-center space-x-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 px-3.5 py-2 text-xs font-medium text-slate-200 transition-colors"
@@ -283,6 +298,61 @@ export const MapPage: React.FC = () => {
 
           <MapViewportHandler onBoundsChange={handleBoundsChange} />
           <MapRecenterController center={recenterPos} />
+
+          {/* Render Hotspot Circles */}
+          {showHotspots && hotspotsData && hotspotsData.hotspots.map((hotspot) => (
+            <Circle
+              key={hotspot.id}
+              center={[hotspot.center_latitude, hotspot.center_longitude]}
+              radius={hotspot.radius}
+              pathOptions={{
+                color: '#f59e0b',
+                fillColor: '#f59e0b',
+                fillOpacity: 0.22,
+                weight: 2,
+                dashArray: '6, 6',
+              }}
+            >
+              <Popup className="custom-leaflet-popup">
+                <div className="p-3 space-y-2 max-w-xs text-slate-900">
+                  <div className="flex items-center justify-between">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-600 text-white flex items-center space-x-1">
+                      <Sparkles className="h-3 w-3 inline mr-1" />
+                      <span>Possible Hotspot</span>
+                    </span>
+                    <span className="text-[11px] font-bold text-amber-700 font-mono">
+                      {((hotspot.confidence || 0) * 100).toFixed(0)}% confidence
+                    </span>
+                  </div>
+
+                  <h4 className="font-bold text-sm leading-tight text-slate-950">{hotspot.title}</h4>
+
+                  <div className="grid grid-cols-2 gap-1.5 text-[11px] bg-slate-100 p-2 rounded border border-slate-200">
+                    <div>
+                      <span className="text-slate-500 block text-[10px]">Reports:</span>
+                      <span className="font-bold">{hotspot.report_count} complaints</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 block text-[10px]">Radius:</span>
+                      <span className="font-bold">{Math.round(hotspot.radius)}m</span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-700 leading-relaxed font-medium bg-amber-50 p-2 rounded border border-amber-200">
+                    {hotspot.explanation}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1">
+                    {hotspot.categories.map((c, idx) => (
+                      <span key={idx} className="px-1.5 py-0.5 rounded text-[9px] bg-slate-200 text-slate-800 font-medium">
+                        {c.replace('_', ' ')}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Popup>
+            </Circle>
+          ))}
 
           {/* Render Markers */}
           {data && data.reports.map((report) => (

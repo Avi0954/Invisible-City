@@ -2,7 +2,7 @@ import os
 import uuid
 import enum
 from datetime import datetime
-from sqlalchemy import String, Text, Float, DateTime, Enum, ForeignKey, Column, JSON
+from sqlalchemy import String, Text, Float, DateTime, Enum, ForeignKey, Column, JSON, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.models.base import Base
@@ -139,12 +139,27 @@ class AIAnalysis(Base):
 
 
 
-class ReportRelation(Base):
-    __tablename__ = "report_relations"
+class ReportRelationship(Base):
+    __tablename__ = "report_relationships"
+    __table_args__ = (
+        UniqueConstraint("report_id", "related_report_id", name="uq_report_relationship_pair"),
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
-    source_report_id = Column(UUID(as_uuid=True), ForeignKey("reports.id", ondelete="CASCADE"), nullable=False, index=True)
-    target_report_id = Column(UUID(as_uuid=True), ForeignKey("reports.id", ondelete="CASCADE"), nullable=False, index=True)
-    relation_type = Column(String(50), default="SIMILAR", nullable=False)
-    similarity_score = Column(Float, nullable=False)
+    report_id = Column(UUID(as_uuid=True), ForeignKey("reports.id", ondelete="CASCADE"), nullable=False, index=True)
+    related_report_id = Column(UUID(as_uuid=True), ForeignKey("reports.id", ondelete="CASCADE"), nullable=False, index=True)
+    relation_type = Column(String(50), nullable=False, default="RELATED", index=True)  # DUPLICATE, RELATED, UNRELATED
+    score = Column(Float, nullable=False, default=0.0)
+    confidence = Column(Float, nullable=False, default=1.0)
+    explanation = Column(Text, nullable=True)
+    algorithm_version = Column(String(50), nullable=False, default="v1")
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+    # Relationships
+    report = relationship("Report", foreign_keys=[report_id], backref="relationships_as_primary")
+    related_report = relationship("Report", foreign_keys=[related_report_id], backref="relationships_as_secondary")
+
+
+# Alias for backward compatibility
+ReportRelation = ReportRelationship

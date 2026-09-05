@@ -48,6 +48,26 @@ class Settings(BaseSettings):
     DEFAULT_MAP_CENTER_LAT: float = 12.9716
     DEFAULT_MAP_CENTER_LNG: float = 77.5946
 
+    # Phase 6 Core Intelligence Settings
+    INTELLIGENCE_CANDIDATE_RADIUS_METERS: float = 1000.0
+    MAX_SIMILARITY_CANDIDATES: int = 50
+    MAX_RELATED_REPORTS: int = 20
+
+    DUPLICATE_THRESHOLD: float = 0.85
+    RELATED_THRESHOLD: float = 0.60
+
+    SIMILARITY_WEIGHT_SEMANTIC: float = 0.40
+    SIMILARITY_WEIGHT_GEO: float = 0.30
+    SIMILARITY_WEIGHT_CATEGORY: float = 0.15
+    SIMILARITY_WEIGHT_TIME: float = 0.15
+
+    HOTSPOT_LOOKBACK_DAYS: int = 30
+    HOTSPOT_EPSILON_METERS: float = 300.0
+    HOTSPOT_MIN_REPORTS: int = 3
+
+    INTELLIGENCE_ALGORITHM_VERSION: str = "v1"
+    HOTSPOT_ALGORITHM_VERSION: str = "v1"
+
 
     # CORS Configuration
     CORS_ORIGINS: Union[List[str], str] = [

@@ -5,6 +5,7 @@ from app.models.report import (
     ReportMedia,
     AIAnalysis,
     ReportRelation,
+    ReportRelationship,
     ReportCategory,
     ReportSeverity,
     ReportStatus,

@@ -1,7 +1,7 @@
 import os
 import uuid
 from datetime import datetime
-from sqlalchemy import String, Text, Float, Integer, DateTime, ForeignKey, Column
+from sqlalchemy import String, Text, Float, Integer, DateTime, ForeignKey, Column, JSON, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.models.base import Base
@@ -20,14 +20,24 @@ class Hotspot(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
-    category = Column(String(100), nullable=False, index=True)
-    status = Column(String(50), default="ACTIVE", nullable=False)
+    category = Column(String(100), nullable=True, index=True)
+    categories = Column(JSON, nullable=True)
+    severity = Column(String(50), default="MEDIUM", nullable=False)
+    status = Column(String(50), default="ACTIVE", nullable=False, index=True)
     
     center_latitude = Column(Float, nullable=False)
     center_longitude = Column(Float, nullable=False)
     geometry = Column(Geometry("POINT", srid=4326) if use_postgis else Text, nullable=True)
+    radius = Column(Float, default=300.0, nullable=False)
     report_count = Column(Integer, default=1, nullable=False)
     
+    score = Column(Float, default=0.0, nullable=False)
+    confidence = Column(Float, default=0.0, nullable=False)
+    explanation = Column(Text, nullable=True)
+    algorithm_version = Column(String(50), default="v1", nullable=False)
+    
+    first_detected = Column(DateTime, default=datetime.utcnow, nullable=False)
+    last_updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -36,10 +46,16 @@ class Hotspot(Base):
 
 class HotspotReport(Base):
     __tablename__ = "hotspot_reports"
+    __table_args__ = (
+        UniqueConstraint("hotspot_id", "report_id", name="uq_hotspot_report_pair"),
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     hotspot_id = Column(UUID(as_uuid=True), ForeignKey("hotspots.id", ondelete="CASCADE"), nullable=False, index=True)
     report_id = Column(UUID(as_uuid=True), ForeignKey("reports.id", ondelete="CASCADE"), nullable=False, index=True)
+    contribution_score = Column(Float, default=1.0, nullable=False)
     added_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     hotspot = relationship("Hotspot", back_populates="hotspot_reports")
+    report = relationship("Report")

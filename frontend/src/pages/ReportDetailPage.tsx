@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useReport, useDeleteReport, useUploadMedia, useDeleteMedia } from '../hooks/useReports';
 import { useReportAnalysis, useAnalyzeReport } from '../hooks/useAIAnalysis';
+import { useRelatedReports, useDuplicateReports } from '../hooks/useIntelligence';
 import { useAuth } from '../context/AuthContext';
 import {
   FileText,
@@ -21,7 +22,10 @@ import {
   AlertTriangle,
   Tag,
   RefreshCw,
-  HelpCircle
+  HelpCircle,
+  Copy,
+  GitCompare,
+  ExternalLink
 } from 'lucide-react';
 
 export const ReportDetailPage: React.FC = () => {
@@ -31,6 +35,9 @@ export const ReportDetailPage: React.FC = () => {
 
   const { data: report, isLoading, isError } = useReport(id!);
   const { data: aiAnalysis, isLoading: aiLoading } = useReportAnalysis(id!);
+  const { data: relatedData } = useRelatedReports(id!);
+  const { data: duplicateData } = useDuplicateReports(id!);
+
   const triggerAnalysisMutation = useAnalyzeReport();
   const deleteReportMutation = useDeleteReport();
   const uploadMediaMutation = useUploadMedia();
@@ -279,6 +286,70 @@ export const ReportDetailPage: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Possible Duplicates Section */}
+        {duplicateData && duplicateData.duplicates.length > 0 && (
+          <div className="space-y-3 border-t border-slate-800/80 pt-4">
+            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center space-x-1.5">
+              <Copy className="h-4 w-4 text-amber-400" />
+              <span>Possible Duplicates ({duplicateData.count})</span>
+            </h3>
+            <div className="space-y-2">
+              {duplicateData.duplicates.map((dup) => (
+                <div key={dup.id} className="rounded-xl border border-amber-800/60 bg-amber-950/30 p-4 space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-amber-300 flex items-center space-x-1">
+                      <span>Possible Duplicate</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-amber-900/80 text-amber-200 font-mono">
+                        {(dup.score * 100).toFixed(0)}% match
+                      </span>
+                    </span>
+                    <Link
+                      to={`/reports/${dup.related_report_id}`}
+                      className="inline-flex items-center space-x-1 text-cyan-400 hover:text-cyan-300 font-medium"
+                    >
+                      <span>View Report</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  </div>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">{dup.explanation}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Related Reports Section */}
+        {relatedData && relatedData.related_reports.length > 0 && (
+          <div className="space-y-3 border-t border-slate-800/80 pt-4">
+            <h3 className="text-xs font-semibold text-cyan-400 uppercase tracking-wider flex items-center space-x-1.5">
+              <GitCompare className="h-4 w-4 text-cyan-400" />
+              <span>Related Reports ({relatedData.count})</span>
+            </h3>
+            <div className="space-y-2">
+              {relatedData.related_reports.map((rel) => (
+                <div key={rel.id} className="rounded-xl border border-slate-800 bg-slate-950 p-4 space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-200 flex items-center space-x-1.5">
+                      <span>Related Report</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono">
+                        {(rel.score * 100).toFixed(0)}% similarity
+                      </span>
+                    </span>
+                    <Link
+                      to={`/reports/${rel.related_report_id}`}
+                      className="inline-flex items-center space-x-1 text-cyan-400 hover:text-cyan-300 font-medium"
+                    >
+                      <span>View Report</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  </div>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">{rel.explanation}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
 
         {/* Spatial Location Details */}
