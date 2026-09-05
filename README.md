@@ -1,6 +1,4 @@
 # Invisible City
-
-> **Build With Bharat 2.0 Hackathon MVP**  
 > A civic intelligence and problem aggregation platform connecting citizen micro-reports to identify macro urban infrastructure issues using AI, location intelligence, and multi-signal pattern clustering.
 
 ---
