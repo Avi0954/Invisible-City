@@ -1,10 +1,13 @@
 from fastapi import APIRouter
-from app.api.v1 import health, auth, reports, ai
+from app.api.v1 import health, auth, reports, ai, map
 
 api_router = APIRouter()
 api_router.include_router(health.router)
 api_router.include_router(auth.router)
+api_router.include_router(map.router)
 api_router.include_router(reports.router)
 api_router.include_router(reports.media_router)
 api_router.include_router(ai.router)
+
+
 

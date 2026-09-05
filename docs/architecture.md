@@ -90,3 +90,43 @@ To maintain production-quality reliability while avoiding DevOps overhead during
 - **Assistive AI Principle**: AI outputs below `AI_CONFIDENCE_THRESHOLD` (0.70) transition to `REVIEW_REQUIRED`. AI insights complement citizen reports without replacing source records.
 - **Vector Embeddings**: 1536-dimensional float vectors validated and stored in `ai_analyses.embedding` and `reports.embedding` for Phase 6 similarity indexing.
 
+## Phase 5: Map & Location Intelligence Architecture
+
+```
+                               ┌─────────────────────────┐
+                               │   Leaflet Map /map      │
+                               │  (OpenStreetMap Tiles)  │
+                               └────────────┬────────────┘
+                                            │
+                                            │ Viewport moveend (300ms Debounced)
+                                            ▼
+                               ┌─────────────────────────┐
+                               │  GET /reports/nearby    │
+                               │ (minLat, maxLat, etc.)  │
+                               └────────────┬────────────┘
+                                            │
+                                            ▼
+                               ┌─────────────────────────┐
+                               │    ReportRepository     │
+                               │   (PostGIS GiST Index)  │
+                               └────────────┬────────────┘
+                                            │
+                                            ▼
+                               ┌─────────────────────────┐
+                               │ PostGIS ST_Intersects / │
+                               │       ST_DWithin        │
+                               └────────────┬────────────┘
+                                            │
+                                            ▼
+                               ┌─────────────────────────┐
+                               │   MapReportListResponse │
+                               │  (Privacy-Safe DTO)     │
+                               └─────────────────────────┘
+```
+
+- **PostGIS Server-Side GIS Execution**: Bounding box queries (`ST_Intersects`) and radius searches (`ST_DWithin`) execute directly on PostgreSQL using PostGIS GiST spatial indexes. No Python-side distance loop or array filtering is performed.
+- **Viewport Bounding-Box Strategy**: Map component fetches reports within active map viewport bounds (`min_latitude`, `max_latitude`, `min_longitude`, `max_longitude`), debounced by 300ms.
+- **Marker Styling & Interactive Popups**: Markers visually convey severity (HIGH/CRITICAL pulsating red, MEDIUM amber, LOW cyan). Popups display category, status, date, short description, and links to `/reports/:id`.
+- **Privacy Controls**: Public map API outputs `MapReportItem` objects omitting all citizen credentials and personal identifiers.
+
+

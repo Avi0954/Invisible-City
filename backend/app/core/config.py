@@ -42,6 +42,13 @@ class Settings(BaseSettings):
     AI_PROMPT_VERSION: str = "v1"
     OPENAI_API_KEY: Optional[str] = None
 
+    # Map & Spatial Intelligence Settings
+    MAP_MAX_REPORTS: int = 500
+    MAX_NEARBY_RADIUS_METERS: float = 50000.0
+    DEFAULT_MAP_CENTER_LAT: float = 12.9716
+    DEFAULT_MAP_CENTER_LNG: float = 77.5946
+
+
     # CORS Configuration
     CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:5173",
