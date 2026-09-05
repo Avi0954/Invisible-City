@@ -46,8 +46,11 @@ export const HealthBadge: React.FC = () => {
           }`}
         />
       </span>
-      <Database className="w-3.5 h-3.5" />
-      <span>{data.database_connected ? 'PostgreSQL Active' : 'API Ready (No DB)'}</span>
+      <span>
+        {data.database_connected
+          ? (data.database_message?.includes('SQLite') ? 'SQLite Active' : 'PostgreSQL Active')
+          : 'API Ready (No DB)'}
+      </span>
     </div>
   );
 };
