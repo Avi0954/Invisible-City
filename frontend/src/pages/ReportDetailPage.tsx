@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useReport, useDeleteReport, useUploadMedia, useDeleteMedia } from '../hooks/useReports';
 import { useReportAnalysis, useAnalyzeReport } from '../hooks/useAIAnalysis';
 import { useRelatedReports, useDuplicateReports } from '../hooks/useIntelligence';
+import { useFlagReport } from '../hooks/useAdmin';
 import { useAuth } from '../context/AuthContext';
 import {
   FileText,
@@ -25,7 +26,9 @@ import {
   HelpCircle,
   Copy,
   GitCompare,
-  ExternalLink
+  ExternalLink,
+  Flag,
+  Flame
 } from 'lucide-react';
 
 export const ReportDetailPage: React.FC = () => {
@@ -42,9 +45,14 @@ export const ReportDetailPage: React.FC = () => {
   const deleteReportMutation = useDeleteReport();
   const uploadMediaMutation = useUploadMedia();
   const deleteMediaMutation = useDeleteMedia();
+  const flagMutation = useFlagReport();
 
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [flagModalOpen, setFlagModalOpen] = useState(false);
+  const [flagReason, setFlagReason] = useState('FALSE_REPORT');
+  const [flagDetails, setFlagDetails] = useState('');
+  const [flagSuccess, setFlagSuccess] = useState(false);
 
   if (isLoading) {
     return (
@@ -106,6 +114,20 @@ export const ReportDetailPage: React.FC = () => {
     }
   };
 
+  const handleFlagSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await flagMutation.mutateAsync({ reportId: report.id, reason: flagReason, details: flagDetails });
+      setFlagSuccess(true);
+      setTimeout(() => {
+        setFlagModalOpen(false);
+        setFlagSuccess(false);
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Back Header */}
@@ -118,16 +140,93 @@ export const ReportDetailPage: React.FC = () => {
           <span>Back</span>
         </button>
 
-        {canModify && (
+        <div className="flex items-center space-x-2">
           <button
-            onClick={handleDeleteReport}
-            className="inline-flex items-center space-x-1.5 rounded-lg border border-red-900 bg-red-950/60 hover:bg-red-900 px-3 py-1.5 text-xs font-semibold text-red-300 transition-colors"
+            onClick={() => setFlagModalOpen(true)}
+            className="inline-flex items-center space-x-1.5 rounded-lg border border-amber-900/60 bg-amber-950/40 hover:bg-amber-900/60 px-3 py-1.5 text-xs font-semibold text-amber-300 transition-colors"
           >
-            <Trash2 className="h-3.5 w-3.5" />
-            <span>Delete Report</span>
+            <Flag className="h-3.5 w-3.5" />
+            <span>Flag Issue</span>
           </button>
-        )}
+
+          {canModify && (
+            <button
+              onClick={handleDeleteReport}
+              className="inline-flex items-center space-x-1.5 rounded-lg border border-red-900 bg-red-950/60 hover:bg-red-900 px-3 py-1.5 text-xs font-semibold text-red-300 transition-colors"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              <span>Delete Report</span>
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* Flag Moderation Modal */}
+      {flagModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-white text-sm flex items-center space-x-1.5">
+                <Flag className="h-4 w-4 text-amber-400" />
+                <span>Flag Report for Moderation</span>
+              </h3>
+              <button onClick={() => setFlagModalOpen(false)} className="text-slate-400 hover:text-white">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {flagSuccess ? (
+              <div className="rounded-xl border border-emerald-800 bg-emerald-950 p-4 text-xs text-emerald-300 text-center font-semibold">
+                ✓ Report flag submitted for municipal review.
+              </div>
+            ) : (
+              <form onSubmit={handleFlagSubmit} className="space-y-4 text-xs">
+                <div className="space-y-1.5">
+                  <label className="text-slate-300 font-medium">Flag Reason</label>
+                  <select
+                    value={flagReason}
+                    onChange={(e) => setFlagReason(e.target.value)}
+                    className="w-full rounded-xl border border-slate-700 bg-slate-950 p-2.5 text-slate-200 focus:outline-none"
+                  >
+                    <option value="FALSE_REPORT">False or Spam Report</option>
+                    <option value="DUPLICATE">Duplicate of Existing Report</option>
+                    <option value="INCORRECT_LOCATION">Incorrect GPS Location</option>
+                    <option value="INAPPROPRIATE_CONTENT">Inappropriate Content</option>
+                    <option value="ALREADY_RESOLVED">Already Resolved Issue</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-slate-300 font-medium">Additional Details (Optional)</label>
+                  <textarea
+                    value={flagDetails}
+                    onChange={(e) => setFlagDetails(e.target.value)}
+                    placeholder="Provide additional context..."
+                    className="w-full rounded-xl border border-slate-700 bg-slate-950 p-2.5 text-slate-200 focus:outline-none h-20"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end space-x-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setFlagModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={flagMutation.isPending}
+                    className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold"
+                  >
+                    {flagMutation.isPending ? 'Submitting...' : 'Submit Flag'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Main Details Card */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 md:p-8 space-y-6 shadow-xl">

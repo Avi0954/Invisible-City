@@ -163,3 +163,17 @@ class ReportRelationship(Base):
 
 # Alias for backward compatibility
 ReportRelation = ReportRelationship
+
+
+class ReportFlag(Base):
+    __tablename__ = "report_flags"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    report_id = Column(UUID(as_uuid=True), ForeignKey("reports.id", ondelete="CASCADE"), nullable=False, index=True)
+    reporter_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    reason = Column(String(100), nullable=False, index=True)  # FALSE_REPORT, DUPLICATE, INCORRECT_LOCATION, INAPPROPRIATE_CONTENT, ALREADY_RESOLVED
+    details = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+
+    report = relationship("Report", backref="flags")
+    reporter = relationship("User")

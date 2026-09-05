@@ -1,7 +1,13 @@
 # Invisible City
 
 > **Build With Bharat 2.0 Hackathon MVP**  
-> A civic intelligence and problem aggregation platform connecting citizen micro-reports to identify macro urban infrastructure issues using AI and location intelligence.
+> A civic intelligence and problem aggregation platform connecting citizen micro-reports to identify macro urban infrastructure issues using AI, location intelligence, and multi-signal pattern clustering.
+
+---
+
+## 🌟 Key Differentiator
+
+Traditional complaint portals treat citizen reports as isolated events. **Invisible City** connects individual citizen reports into evidence of larger civic problems, detects spatial problem hotspots, ranks issues by priority, and gives municipal authorities the evidence they need to act first.
 
 ---
 
@@ -9,44 +15,46 @@
 
 Invisible City is built as a **Modular Monolith** to deliver production-quality reliability without unnecessary infrastructure or DevOps complexity.
 
-- **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, React Router v6, TanStack Query v5, Axios.
-- **Backend**: Python FastAPI, Pydantic v2, SQLAlchemy v2, Alembic, psycopg2-binary.
-- **Database**: PostgreSQL with PostGIS (geographic location queries) and `pgvector` (semantic problem embeddings).
+- **Frontend**: React 18, Vite, TypeScript, Vanilla CSS + Tailwind, React Router v6, Leaflet (`react-leaflet`), TanStack Query v5, Axios.
+- **Backend**: Python 3.11+, FastAPI, Pydantic v2, SQLAlchemy v2, Alembic, psycopg2-binary.
+- **Database**: PostgreSQL with PostGIS (spatial geometry queries via `ST_DWithin`) and `pgvector` (1536-dimensional semantic problem embeddings).
+- **AI Analysis**: Multi-provider AI Layer (`LocalAIProvider`, `OpenAIProvider`) with structured Pydantic validation, keyword extraction, and embedding generation.
+- **Intelligence Engine**: PostGIS spatial candidate generation, 4-signal similarity scoring (semantic, geographic, category, temporal), duplicate detection, DBSCAN spatial density hotspot clustering, and 6-factor priority ranking ($0 \to 100$).
 - **API Standard**: RESTful API with `/api/v1` versioning and Request ID correlation tracing (`X-Request-ID`).
 
 ```
 invisible-city/
-├── frontend/             # React SPA (Vite + TS + Tailwind)
+├── frontend/             # React SPA (Vite + TS + Tailwind + Leaflet)
 │   ├── src/
 │   │   ├── api/          # Axios HTTP client configuration
 │   │   ├── components/   # Header, Sidebar, HealthBadge, Footer
-│   │   ├── hooks/        # TanStack Query custom hooks
+│   │   ├── hooks/        # TanStack Query custom hooks (useReports, useMapReports, useIntelligence, useAdmin)
 │   │   ├── layouts/      # Main application layout wrapper
-│   │   ├── pages/        # Dashboard, Login, Register, Report, My Reports, Map, Admin
-│   │   ├── routes/       # React Router route registry
-│   │   ├── services/     # API service layer
-│   │   ├── types/        # TypeScript interfaces & types
-│   │   └── utils/        # Utility helpers (cn, etc.)
+│   │   ├── pages/        # HomePage, Login, Register, Report, MyReports, MapPage, ReportDetailPage, AdminPage
+│   │   ├── services/     # API service layer (reportService, mapService, intelligenceService, adminService)
+│   │   └── types/        # TypeScript interfaces (report, map, intelligence, admin)
 │   └── package.json
 │
 ├── backend/              # FastAPI Modular Monolith
 │   ├── app/
-│   │   ├── api/v1/       # Version 1 API routers & endpoints (GET /api/v1/health)
-│   │   ├── core/         # Settings (pydantic-settings), logging, custom exceptions
+│   │   ├── ai/           # AI analysis provider layer & schemas
+│   │   ├── api/v1/       # Version 1 API routers (auth, reports, map, intelligence, admin, moderation, health)
+│   │   ├── cli/          # CLI commands (seed_demo.py)
+│   │   ├── core/         # Settings (pydantic-settings), security, logging, exceptions
 │   │   ├── db/           # SQLAlchemy engine, sessions & DB probes
+│   │   ├── intelligence/ # Candidate search, 4-signal scoring, DBSCAN hotspots, 6-factor priority engine
 │   │   ├── middleware/   # Request ID tracing middleware
-│   │   ├── models/       # Declarative ORM base
+│   │   ├── models/       # Declarative ORM models (User, Report, ReportMedia, AIAnalysis, ReportRelationship, Hotspot, HotspotReport, AuditLog, ReportFlag)
 │   │   ├── repositories/ # Data access abstraction layer
 │   │   ├── schemas/      # Pydantic validation schemas
-│   │   └── services/     # Business logic layer
-│   ├── alembic/          # Migration scripts & configuration
-│   ├── main.py           # FastAPI application factory & middleware setup
+│   │   └── services/     # Storage providers & image validation
+│   ├── alembic/          # Migration scripts (001_phase2, 002_phase4_ai, 003_phase6_intelligence)
+│   ├── tests/            # Pytest test suite (test_auth, test_reports, test_ai_analysis, test_map_spatial, test_intelligence, test_final_readiness)
+│   ├── main.py           # FastAPI application factory
 │   └── requirements.txt
 │
-├── docs/                 # System & architectural documentation
-├── .github/              # GitHub Actions CI workflow
+├── docs/                 # Hackathon Demo Guide (demo.md) and architectural docs
 ├── .env.example          # Environment variables template
-├── .gitignore
 └── README.md
 ```
 
@@ -56,15 +64,11 @@ invisible-city/
 
 ### 1. Backend Setup (FastAPI)
 
-Navigate to the `backend/` directory and set up a Python virtual environment:
-
 ```bash
 cd backend
 
-# Create virtual environment
+# Create & activate virtual environment
 python -m venv .venv
-
-# Activate virtual environment
 # Windows (PowerShell):
 .\.venv\Scripts\Activate.ps1
 # Linux/macOS:
@@ -72,9 +76,6 @@ source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Copy environment variables
-cp .env.example .env
 
 # Run FastAPI backend development server
 python run.py
@@ -85,26 +86,24 @@ uvicorn app.main:app --reload --port 8000
 Backend will be available at:
 - **API Base**: `http://localhost:8000/api/v1`
 - **Health Check**: `http://localhost:8000/api/v1/health`
-- **Swagger Interactive Docs**: `http://localhost:8000/api/v1/docs`
+- **Swagger Interactive Docs**: `http://localhost:8000/docs`
 
 ---
 
-### 2. Database Migrations (Alembic)
+### 2. Seed Hackathon Demo Dataset
 
-To verify or apply Alembic migrations against your PostgreSQL database:
+Run the automated seed CLI command in the backend directory:
 
 ```bash
 cd backend
-
-# Check current migration revision
-alembic current
-
-# Create a new migration (when schema models are added)
-alembic revision --autogenerate -m "initial_schema"
-
-# Upgrade database to latest revision
-alembic upgrade head
+python -m app.cli.seed_demo
 ```
+
+#### Seed Credentials Summary
+- **Municipal Admin**: `admin@invisiblecity.civic` / `Admin123!`
+- **Citizen Account**: `citizen1@example.com` / `Password123!`
+
+The seed script creates users, concentrated reports near Main Gate, executes AI analysis, generates embeddings, calculates 4-signal similarity, detects spatial problem hotspots, and calculates priority scores.
 
 ---
 
@@ -115,7 +114,7 @@ In a separate terminal, navigate to `frontend/` and start the Vite development s
 ```bash
 cd frontend
 
-# Install node dependencies
+# Install dependencies
 npm install
 
 # Run development server
@@ -126,36 +125,24 @@ Frontend application will be accessible at `http://localhost:5173`.
 
 ---
 
-## ⚙️ Environment Variables
+## 📖 Live Hackathon Demo Guide
 
-The following environment variables are configurable via `.env` files:
-
-### Backend `.env`
-
-| Variable | Default Value | Description |
-|---|---|---|
-| `ENVIRONMENT` | `development` | Runtime environment mode |
-| `LOG_LEVEL` | `INFO` | Logging granularity (DEBUG, INFO, WARNING, ERROR) |
-| `PROJECT_NAME` | `Invisible City` | Application title |
-| `API_V1_STR` | `/api/v1` | API versioning path prefix |
-| `POSTGRES_SERVER` | `localhost` | PostgreSQL host |
-| `POSTGRES_PORT` | `5432` | PostgreSQL port |
-| `POSTGRES_USER` | `postgres` | PostgreSQL username |
-| `POSTGRES_PASSWORD` | `postgres` | PostgreSQL password |
-| `POSTGRES_DB` | `invisible_city` | Database name |
-| `DATABASE_URL` | `postgresql://postgres:postgres@localhost:5432/invisible_city` | Full SQLAlchemy connection string |
-| `CORS_ORIGINS` | `["http://localhost:5173"]` | Allowed CORS origins array |
-
-### Frontend `.env`
-
-| Variable | Default Value | Description |
-|---|---|---|
-| `VITE_API_BASE_URL` | `http://localhost:8000/api/v1` | Backend API v1 base URL |
+For full step-by-step evaluation instructions, consult [`docs/demo.md`](file:///d:/LPU%20CERTIFICATES/Invisible%20CIty/docs/demo.md).
 
 ---
 
 ## 🔍 Verification & Testing
 
-- **Backend Health Check**: `GET /api/v1/health` returns `status: healthy`, timestamp, active environment, and `database_connected` probe status.
-- **Frontend Syntax & Types**: Run `npm run lint` inside `frontend/` to verify zero TypeScript errors.
-- **Backend Code Check**: Run `python -m py_compile backend/app/main.py` to verify backend module validity.
+Run the complete backend test suite (64 automated unit & integration tests):
+
+```bash
+cd backend
+python -m pytest
+```
+
+Run frontend production build verification:
+
+```bash
+cd frontend
+npm run build
+```

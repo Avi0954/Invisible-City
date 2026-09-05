@@ -101,3 +101,6 @@ def require_roles(allowed_roles: List[UserRole]):
             )
         return current_user
     return role_checker
+
+
+get_current_admin_user = require_roles([UserRole.ADMIN])
