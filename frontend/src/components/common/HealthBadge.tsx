@@ -30,27 +30,25 @@ export const HealthBadge: React.FC = () => {
       className={`flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-md transition-all ${
         isHealthy
           ? 'bg-emerald-950/50 border-emerald-800/60 text-emerald-300'
-          : 'bg-amber-950/50 border-amber-800/60 text-amber-300'
+          : 'bg-red-950/60 border-red-800/80 text-red-300'
       }`}
       title={data.database_message || `API: ${data.status}, DB: ${data.database_connected ? 'Connected' : 'Disconnected'}`}
     >
       <span className={`relative flex h-2 w-2`}>
         <span
           className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-            isHealthy ? 'bg-emerald-400' : 'bg-amber-400'
+            isHealthy ? 'bg-emerald-400' : 'bg-red-400'
           }`}
         />
         <span
           className={`relative inline-flex rounded-full h-2 w-2 ${
-            isHealthy ? 'bg-emerald-500' : 'bg-amber-500'
+            isHealthy ? 'bg-emerald-500' : 'bg-red-500'
           }`}
         />
       </span>
-      <span>
-        {data.database_connected
-          ? (data.database_message?.includes('SQLite') ? 'SQLite Active' : 'PostgreSQL Active')
-          : 'API Ready (No DB)'}
-      </span>
+      <Database className="w-3.5 h-3.5" />
+      <span>{isHealthy ? 'PostgreSQL Connected' : 'Database Unavailable'}</span>
     </div>
   );
 };
+

@@ -11,16 +11,20 @@ router = APIRouter(tags=["Health"])
     "/health",
     response_model=HealthResponse,
     summary="Check API & Database Health",
-    description="Returns system operational status and probes PostgreSQL database connectivity."
+    description="Returns system operational status and probes PostgreSQL database connectivity, PostGIS, and pgvector extensions."
 )
 async def health_check():
-    is_db_connected, db_msg = check_db_connection()
+    is_db_connected, db_msg, details = check_db_connection()
     
     return HealthResponse(
         status="healthy" if is_db_connected else "degraded",
         timestamp=datetime.utcnow(),
         environment=settings.ENVIRONMENT,
         database_connected=is_db_connected,
+        database=details.get("database", "postgresql"),
+        postgis=details.get("postgis", False),
+        pgvector=details.get("pgvector", False),
         database_message=db_msg,
         version="0.1.0"
     )
+

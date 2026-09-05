@@ -3,6 +3,9 @@ export interface HealthStatusResponse {
   timestamp: string;
   environment: string;
   database_connected: boolean;
+  database?: string;
+  postgis?: boolean;
+  pgvector?: boolean;
   database_message?: string;
   version: string;
 }

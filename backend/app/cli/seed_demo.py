@@ -29,23 +29,22 @@ from app.intelligence.priority import calculate_report_priority
 
 
 def get_demo_db_session():
-    """Tries PostgreSQL connection first, falling back gracefully to SQLite demo database if Postgres is not running."""
+    """Connects explicitly to the configured PostgreSQL database to seed demo data."""
     try:
         engine = create_engine(settings.DATABASE_URL)
-        # Test connection
-        conn = engine.connect()
-        conn.close()
-        print("  [DB] Connected to configured PostgreSQL database.")
-    except Exception:
-        db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../invisible_city_demo.db"))
-        print(f"  [DB] PostgreSQL not running. Using local demo database: sqlite:///{db_path}")
-        sqlite_url = f"sqlite:///{db_path}"
-        engine = create_engine(sqlite_url, connect_args={"check_same_thread": False})
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        print(f"  [DB] Connected to configured PostgreSQL database at {settings.DATABASE_URL}.")
+    except Exception as e:
+        print(f"\n[ERROR] Could not connect to PostgreSQL database ({settings.DATABASE_URL}).")
+        print(f"        Reason: {e}")
+        print("        PostgreSQL + PostGIS + pgvector must be running on port 5432 to seed and operate Invisible City.\n")
+        sys.exit(1)
 
-    # Ensure tables created
     Base.metadata.create_all(bind=engine)
     Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     return Session()
+
 
 
 def seed_demo_data():
