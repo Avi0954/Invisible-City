@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useReports } from '../hooks/useReports';
+import { Report } from '../types/report';
 import {
   AlertCircle,
   MapPin,
@@ -9,79 +11,121 @@ import {
   Zap,
   Trash2,
   Construction,
-  ArrowRight
+  ArrowRight,
+  GitMerge,
+  Flame,
+  ShieldCheck
 } from 'lucide-react';
 
 const categories = [
-  { title: 'Potholes & Roads', icon: Construction, color: 'text-amber-400', bg: 'bg-amber-950/40 border-amber-800/40' },
-  { title: 'Garbage & Waste', icon: Trash2, color: 'text-emerald-400', bg: 'bg-emerald-950/40 border-emerald-800/40' },
-  { title: 'Broken Streetlights', icon: Zap, color: 'text-yellow-400', bg: 'bg-yellow-950/40 border-yellow-800/40' },
-  { title: 'Water Leaks', icon: Droplets, color: 'text-cyan-400', bg: 'bg-cyan-950/40 border-cyan-800/40' },
+  { title: 'Potholes & Roads', icon: Construction, color: 'text-amber-400', bg: 'bg-amber-950/30 border-amber-800/40', desc: 'Damaged asphalt, road collapses, or hazards.' },
+  { title: 'Garbage & Waste', icon: Trash2, color: 'text-emerald-400', bg: 'bg-emerald-950/30 border-emerald-800/40', desc: 'Illegal dumping, uncollected trash, overflow.' },
+  { title: 'Streetlights & Power', icon: Zap, color: 'text-yellow-400', bg: 'bg-yellow-950/30 border-yellow-800/40', desc: 'Blacked-out lamps, exposed wiring, outages.' },
+  { title: 'Water & Sewage', icon: Droplets, color: 'text-cyan-400', bg: 'bg-cyan-950/30 border-cyan-800/40', desc: 'Pipe bursts, flooding, open manholes.' },
+];
+
+const pipelineSteps = [
+  { step: '01', title: 'Citizen Report', desc: 'Submit photo, location, and description in seconds.', icon: AlertCircle, color: 'text-sky-400' },
+  { step: '02', title: 'AI Analysis', desc: 'Automatic category, severity, and 1536-dim vector embedding.', icon: Sparkles, color: 'text-cyan-400' },
+  { step: '03', title: 'Signal Matching', desc: 'PostGIS spatial bounding box & multi-signal similarity scoring.', icon: GitMerge, color: 'text-indigo-400' },
+  { step: '04', title: 'Hotspot Clustering', desc: 'DBSCAN spatial-density clustering pinpoints systemic patterns.', icon: Flame, color: 'text-amber-400' },
+  { step: '05', title: 'Municipal Triage', desc: 'Priority scoring (0-100) guides verification and resolution.', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
 
 export const HomePage: React.FC = () => {
+  const { data: reportsData } = useReports({ limit: 100 });
+  const totalReports = reportsData?.items.length || 0;
+  const verifiedCount = reportsData?.items.filter((r: Report) => r.verification_status === 'ADMIN_VERIFIED').length || 0;
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 p-8 md:p-10 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 p-8 md:p-12 shadow-2xl">
         <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
-        <div className="relative z-10 max-w-3xl space-y-4">
+        <div className="relative z-10 max-w-3xl space-y-5">
           <div className="inline-flex items-center space-x-2 rounded-full bg-cyan-950/80 border border-cyan-800/60 px-3.5 py-1 text-xs font-semibold text-cyan-300">
             <Sparkles className="h-3.5 w-3.5" />
             <span>Civic Intelligence & Aggregation Platform</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            See the <span className="bg-gradient-to-r from-cyan-400 to-sky-300 bg-clip-text text-transparent">Invisible Patterns</span> Shaping Your City
+          
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            Small problems can reveal <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-emerald-400 bg-clip-text text-transparent">bigger problems.</span>
           </h1>
+
           <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-            Invisible City empowers citizens to report everyday urban problems. Our AI backend clusters micro-reports into macro infrastructure insights for municipal authorities.
+            Invisible City transforms isolated citizen complaints into actionable civic intelligence. Our spatial engine connects separate reports to detect hidden infrastructure patterns before they escalate.
           </p>
+
           <div className="pt-2 flex flex-wrap gap-4">
             <Link
               to="/report"
               className="inline-flex items-center space-x-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-900/50 transition-all hover:scale-[1.02]"
             >
-              <span>Submit a Report</span>
+              <span>Report a Problem</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/map"
-              className="inline-flex items-center space-x-2 rounded-xl border border-slate-700 bg-slate-850 hover:bg-slate-800 px-6 py-3 text-sm font-semibold text-slate-200 transition-all"
+              className="inline-flex items-center space-x-2 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 px-6 py-3 text-sm font-semibold text-slate-200 transition-all"
             >
               <MapPin className="h-4 w-4 text-cyan-400" />
-              <span>Explore Problem Map</span>
+              <span>Explore Interactive Map</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Metrics Row */}
+      {/* Real Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-sm">
-            <span>Reported Issues</span>
+            <span>Total Civic Reports</span>
             <AlertCircle className="h-4 w-4 text-cyan-400" />
           </div>
-          <div className="text-3xl font-bold text-white">0</div>
-          <p className="text-xs text-slate-500">System initialized for hackathon MVP</p>
+          <div className="text-3xl font-bold text-white">{totalReports}</div>
+          <p className="text-xs text-slate-500">Live backend report registry</p>
         </div>
 
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-sm">
-            <span>AI Macro Clusters</span>
+            <span>Spatial & Vector Clusters</span>
             <Sparkles className="h-4 w-4 text-sky-400" />
           </div>
-          <div className="text-3xl font-bold text-white">0</div>
-          <p className="text-xs text-slate-500">pgvector semantic clustering ready</p>
+          <div className="text-3xl font-bold text-white">DBSCAN Active</div>
+          <p className="text-xs text-slate-500">Continuous pattern detection engine</p>
         </div>
 
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-sm">
-            <span>Resolution Rate</span>
+            <span>Verified Admin Actions</span>
             <TrendingUp className="h-4 w-4 text-emerald-400" />
           </div>
-          <div className="text-3xl font-bold text-emerald-400">100%</div>
-          <p className="text-xs text-slate-500">Target municipal response efficiency</p>
+          <div className="text-3xl font-bold text-emerald-400">{verifiedCount}</div>
+          <p className="text-xs text-slate-500">Municipal triage verification rate</p>
+        </div>
+      </div>
+
+      {/* Intelligence Pipeline Breakdown */}
+      <div className="space-y-6">
+        <div className="flex flex-col space-y-1">
+          <h2 className="text-xl font-bold text-white tracking-tight">How Invisible City Connects Signals</h2>
+          <p className="text-sm text-slate-400">From citizen input to municipal action in 5 automated steps.</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {pipelineSteps.map((step) => {
+            const Icon = step.icon;
+            return (
+              <div key={step.step} className="rounded-xl border border-slate-800 bg-slate-900/40 p-5 space-y-3 relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-500 tracking-wider uppercase">{step.step}</span>
+                  <Icon className={`h-5 w-5 ${step.color}`} />
+                </div>
+                <h3 className="font-semibold text-white text-sm">{step.title}</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">{step.desc}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -92,12 +136,12 @@ export const HomePage: React.FC = () => {
           {categories.map((cat, idx) => {
             const Icon = cat.icon;
             return (
-              <div key={idx} className={`rounded-xl border ${cat.bg} p-5 space-y-3 transition-transform hover:-translate-y-1`}>
+              <div key={idx} className={`rounded-xl border ${cat.bg} p-5 space-y-3 transition-all hover:border-slate-700`}>
                 <div className={`p-2.5 rounded-lg w-fit bg-slate-900/80 ${cat.color}`}>
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="font-semibold text-white text-base">{cat.title}</h3>
-                <p className="text-xs text-slate-400">Report incidents to alert nearby citizens and local municipality.</p>
+                <p className="text-xs text-slate-400">{cat.desc}</p>
               </div>
             );
           })}
@@ -106,3 +150,4 @@ export const HomePage: React.FC = () => {
     </div>
   );
 };
+

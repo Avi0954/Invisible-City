@@ -76,6 +76,34 @@ export const MyReportsPage: React.FC = () => {
         </Link>
       </div>
 
+      {/* KPI Status Summary Cards */}
+      {data && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 space-y-1">
+            <div className="text-xs text-slate-400 font-medium">Total Registered</div>
+            <div className="text-2xl font-bold text-white">{data.total}</div>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 space-y-1">
+            <div className="text-xs text-slate-400 font-medium">Open Queue</div>
+            <div className="text-2xl font-bold text-sky-400">
+              {data.items.filter(r => r.status === 'OPEN').length}
+            </div>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 space-y-1">
+            <div className="text-xs text-slate-400 font-medium">In Progress</div>
+            <div className="text-2xl font-bold text-amber-400">
+              {data.items.filter(r => r.status === 'IN_PROGRESS').length}
+            </div>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 space-y-1">
+            <div className="text-xs text-slate-400 font-medium">Resolved</div>
+            <div className="text-2xl font-bold text-emerald-400">
+              {data.items.filter(r => r.status === 'RESOLVED').length}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Filter Row */}
       <div className="flex flex-wrap items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-xs">
         <div className="flex items-center space-x-1.5 text-slate-400 pr-2 border-r border-slate-800">
