@@ -7,9 +7,12 @@ from datetime import datetime, timedelta
 # Ensure backend root is on sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-os.environ["ENVIRONMENT"] = "testing"
+# Ensure ENVIRONMENT is development so pgvector/PostGIS models are active
+if os.getenv("ENVIRONMENT") == "testing":
+    os.environ["ENVIRONMENT"] = "development"
 
-from sqlalchemy import create_engine
+
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 from app.core.security import get_password_hash

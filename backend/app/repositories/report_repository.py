@@ -162,14 +162,25 @@ class ReportRepository:
         # 2. Radius Spatial Filter (if lat, lng, radius provided)
         elif lat is not None and lng is not None and radius is not None:
             if use_postgis:
-                point = func.ST_SetSRID(func.ST_MakePoint(lng, lat), 4326)
-                query = query.filter(
-                    func.ST_DWithin(
-                        func.cast(Report.geometry, type_=func.geography),
-                        func.cast(point, type_=func.geography),
-                        radius
+                try:
+                    from geoalchemy2 import Geography
+                    point = func.ST_SetSRID(func.ST_MakePoint(lng, lat), 4326)
+                    query = query.filter(
+                        func.ST_DWithin(
+                            func.cast(Report.geometry, Geography),
+                            func.cast(point, Geography),
+                            radius
+                        )
                     )
-                )
+                except Exception:
+                    lat_delta = radius / 111111.0
+                    lng_delta = radius / (111111.0 * max(0.01, math.cos(math.radians(lat))))
+                    query = query.filter(
+                        Report.latitude >= lat - lat_delta,
+                        Report.latitude <= lat + lat_delta,
+                        Report.longitude >= lng - lng_delta,
+                        Report.longitude <= lng + lng_delta
+                    )
             else:
                 # SQLite fallback bounding box estimation
                 lat_delta = radius / 111111.0
