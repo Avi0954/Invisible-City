@@ -20,16 +20,15 @@ export const Header: React.FC = () => {
               Invisible City
             </span>
             <span className="block text-[10px] font-semibold uppercase tracking-wider text-cyan-400/80">
-              Build With Bharat 2.0
+              Civic Intelligence Platform
             </span>
           </div>
         </Link>
 
         {/* Center/Right Nav & Actions */}
         <div className="flex items-center space-x-4">
-          <HealthBadge />
-
           {isAuthenticated ? (
+
             <>
               <Link
                 to="/report"

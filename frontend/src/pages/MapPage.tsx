@@ -178,10 +178,10 @@ export const MapPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight flex items-center space-x-2">
             <MapPin className="h-6 w-6 text-cyan-400" />
-            <span>Spatial Problem Map</span>
+            <span>Spatial Map</span>
           </h1>
           <p className="text-xs text-slate-400">
-            Interactive PostGIS spatial GIS view displaying reports dynamically by visible viewport bounds.
+            Interactive spatial map displaying community reports across the city.
           </p>
         </div>
 

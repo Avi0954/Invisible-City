@@ -89,13 +89,14 @@ export const Sidebar: React.FC = () => {
           </div>
         )}
 
-        {/* Hackathon Badge Card */}
+        {/* Product Context Card */}
         <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 text-xs text-slate-400">
-          <div className="font-semibold text-slate-200 mb-1">Invisible City Monolith</div>
+          <div className="font-semibold text-slate-200 mb-1">About Invisible City</div>
           <p className="text-[11px] text-slate-400 leading-relaxed">
-            Connecting isolated urban complaints into actionable macro insights with AI & location intelligence.
+            Turn individual reports into a clearer picture of what is happening across the city.
           </p>
         </div>
+
       </div>
     </aside>
   );

@@ -25,17 +25,17 @@ const categories = [
 ];
 
 const pipelineSteps = [
-  { step: '01', title: 'Citizen Report', desc: 'Submit photo, location, and description in seconds.', icon: AlertCircle, color: 'text-sky-400' },
-  { step: '02', title: 'AI Analysis', desc: 'Automatic category, severity, and 1536-dim vector embedding.', icon: Sparkles, color: 'text-cyan-400' },
-  { step: '03', title: 'Signal Matching', desc: 'PostGIS spatial bounding box & multi-signal similarity scoring.', icon: GitMerge, color: 'text-indigo-400' },
-  { step: '04', title: 'Hotspot Clustering', desc: 'DBSCAN spatial-density clustering pinpoints systemic patterns.', icon: Flame, color: 'text-amber-400' },
-  { step: '05', title: 'Municipal Triage', desc: 'Priority scoring (0-100) guides verification and resolution.', icon: ShieldCheck, color: 'text-emerald-400' },
+  { step: '01', title: 'Citizen Report', desc: 'Submit photo, location, and description of the issue.', icon: AlertCircle, color: 'text-sky-400' },
+  { step: '02', title: 'AI Analysis', desc: 'Automatic category, severity, and factual observation extraction.', icon: Sparkles, color: 'text-cyan-400' },
+  { step: '03', title: 'Signal Matching', desc: 'Proximity and multi-signal similarity comparison across reports.', icon: GitMerge, color: 'text-indigo-400' },
+  { step: '04', title: 'Pattern Detection', desc: 'Spatial density analysis pinpoints recurring problem areas.', icon: Flame, color: 'text-amber-400' },
+  { step: '05', title: 'Municipal Action', desc: 'Priority scoring guides municipal review and resolution.', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
 
 export const HomePage: React.FC = () => {
   const { data: reportsData } = useReports({ limit: 100 });
   const totalReports = reportsData?.items.length || 0;
-  const verifiedCount = reportsData?.items.filter((r: Report) => r.verification_status === 'ADMIN_VERIFIED').length || 0;
+  const unverifiedCount = reportsData?.items.filter((r: Report) => r.verification_status === 'UNVERIFIED' || r.verification_status === 'UNDER_REVIEW').length || 0;
 
   return (
     <div className="space-y-12">
@@ -45,7 +45,7 @@ export const HomePage: React.FC = () => {
         <div className="relative z-10 max-w-3xl space-y-5">
           <div className="inline-flex items-center space-x-2 rounded-full bg-cyan-950/80 border border-cyan-800/60 px-3.5 py-1 text-xs font-semibold text-cyan-300">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Civic Intelligence & Aggregation Platform</span>
+            <span>Civic Intelligence Platform</span>
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
@@ -53,7 +53,7 @@ export const HomePage: React.FC = () => {
           </h1>
 
           <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-            Invisible City transforms isolated citizen complaints into actionable civic intelligence. Our spatial engine connects separate reports to detect hidden infrastructure patterns before they escalate.
+            Report issues in your city and help uncover patterns that might otherwise go unnoticed. Invisible City connects individual citizen complaints into a clearer picture of urban infrastructure.
           </p>
 
           <div className="pt-2 flex flex-wrap gap-4">
@@ -61,7 +61,7 @@ export const HomePage: React.FC = () => {
               to="/report"
               className="inline-flex items-center space-x-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-900/50 transition-all hover:scale-[1.02]"
             >
-              <span>Report a Problem</span>
+              <span>Report an Issue</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
@@ -75,54 +75,71 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Real Metrics Row */}
+      {/* Real Civic Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-sm">
-            <span>Total Civic Reports</span>
+            <span>Community Reports</span>
             <AlertCircle className="h-4 w-4 text-cyan-400" />
           </div>
           <div className="text-3xl font-bold text-white">{totalReports}</div>
-          <p className="text-xs text-slate-500">Live backend report registry</p>
+          <p className="text-xs text-slate-500">Issues reported by citizens</p>
         </div>
 
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-sm">
-            <span>Spatial & Vector Clusters</span>
-            <Sparkles className="h-4 w-4 text-sky-400" />
+            <span>Possible Hotspots</span>
+            <Flame className="h-4 w-4 text-amber-400" />
           </div>
-          <div className="text-3xl font-bold text-white">DBSCAN Active</div>
-          <p className="text-xs text-slate-500">Continuous pattern detection engine</p>
+          <div className="text-3xl font-bold text-white">Active</div>
+          <p className="text-xs text-slate-500">Recurring issue patterns detected</p>
         </div>
 
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-sm">
-            <span>Verified Admin Actions</span>
+            <span>Under Review</span>
             <TrendingUp className="h-4 w-4 text-emerald-400" />
           </div>
-          <div className="text-3xl font-bold text-emerald-400">{verifiedCount}</div>
-          <p className="text-xs text-slate-500">Municipal triage verification rate</p>
+          <div className="text-3xl font-bold text-cyan-400">{unverifiedCount}</div>
+          <p className="text-xs text-slate-500">Reports awaiting municipal triage</p>
         </div>
       </div>
 
       {/* Intelligence Pipeline Breakdown */}
       <div className="space-y-6">
         <div className="flex flex-col space-y-1">
-          <h2 className="text-xl font-bold text-white tracking-tight">How Invisible City Connects Signals</h2>
-          <p className="text-sm text-slate-400">From citizen input to municipal action in 5 automated steps.</p>
+          <h2 className="text-xl font-bold text-white tracking-tight flex items-center space-x-2">
+            <GitMerge className="h-5 w-5 text-cyan-400" />
+            <span>How Invisible City Connects Signals</span>
+          </h2>
+          <p className="text-sm text-slate-400">
+            These aren't just separate complaints. Invisible City connects them to reveal possible bigger problems.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {pipelineSteps.map((step) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 relative">
+          {pipelineSteps.map((step, idx) => {
             const Icon = step.icon;
             return (
-              <div key={step.step} className="rounded-xl border border-slate-800 bg-slate-900/40 p-5 space-y-3 relative overflow-hidden">
+              <div
+                key={step.step}
+                className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 space-y-3 relative overflow-hidden group hover:border-slate-700 transition-all shadow-lg"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 tracking-wider uppercase">{step.step}</span>
-                  <Icon className={`h-5 w-5 ${step.color}`} />
+                  <span className="px-2 py-0.5 rounded text-[11px] font-extrabold bg-slate-950 text-cyan-400 border border-slate-800 font-mono">
+                    {step.step}
+                  </span>
+                  <Icon className={`h-5 w-5 ${step.color} transition-transform group-hover:scale-110`} />
                 </div>
-                <h3 className="font-semibold text-white text-sm">{step.title}</h3>
+                <h3 className="font-bold text-white text-sm tracking-tight">{step.title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">{step.desc}</p>
+
+                {/* Visual Connector Arrow for desktop */}
+                {idx < pipelineSteps.length - 1 && (
+                  <div className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 z-20 text-slate-600">
+                    <ArrowRight className="h-4 w-4 text-slate-600" />
+                  </div>
+                )}
               </div>
             );
           })}
