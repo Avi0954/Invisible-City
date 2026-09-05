@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useReport, useDeleteReport, useUploadMedia, useDeleteMedia } from '../hooks/useReports';
+import { useReportAnalysis, useAnalyzeReport } from '../hooks/useAIAnalysis';
 import { useAuth } from '../context/AuthContext';
 import {
   FileText,
@@ -14,7 +15,13 @@ import {
   AlertCircle,
   Camera,
   CheckCircle2,
-  X
+  X,
+  Sparkles,
+  Cpu,
+  AlertTriangle,
+  Tag,
+  RefreshCw,
+  HelpCircle
 } from 'lucide-react';
 
 export const ReportDetailPage: React.FC = () => {
@@ -23,6 +30,8 @@ export const ReportDetailPage: React.FC = () => {
   const { user, isAdmin } = useAuth();
 
   const { data: report, isLoading, isError } = useReport(id!);
+  const { data: aiAnalysis, isLoading: aiLoading } = useReportAnalysis(id!);
+  const triggerAnalysisMutation = useAnalyzeReport();
   const deleteReportMutation = useDeleteReport();
   const uploadMediaMutation = useUploadMedia();
   const deleteMediaMutation = useDeleteMedia();
@@ -147,6 +156,130 @@ export const ReportDetailPage: React.FC = () => {
           <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Description</h3>
           <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-line">{report.description}</p>
         </div>
+
+        {/* AI Analysis Layer Section */}
+        <div className="space-y-3 border-t border-slate-800/80 pt-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
+              <Sparkles className="h-4 w-4 text-cyan-400" />
+              <span>AI Intelligence Analysis</span>
+            </h3>
+
+            {(!aiAnalysis || aiAnalysis.processing_status === 'FAILED') && (
+              <button
+                onClick={() => triggerAnalysisMutation.mutate(report.id)}
+                disabled={triggerAnalysisMutation.isPending}
+                className="inline-flex items-center space-x-1.5 rounded-lg border border-cyan-800 bg-cyan-950/80 hover:bg-cyan-900 px-3 py-1 text-xs font-semibold text-cyan-300 transition-colors disabled:opacity-50"
+              >
+                {triggerAnalysisMutation.isPending ? (
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Cpu className="h-3.5 w-3.5" />
+                )}
+                <span>{aiAnalysis?.processing_status === 'FAILED' ? 'Retry AI Analysis' : 'Run AI Analysis'}</span>
+              </button>
+            )}
+          </div>
+
+          {aiAnalysis && (aiAnalysis.processing_status === 'PENDING' || aiAnalysis.processing_status === 'PROCESSING') && (
+            <div className="rounded-xl border border-cyan-800/50 bg-cyan-950/30 p-4 flex items-center space-x-3 text-xs text-cyan-300 animate-pulse">
+              <div className="h-4 w-4 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin flex-shrink-0" />
+              <span>Analyzing report with AI intelligence... (Status: {aiAnalysis.processing_status})</span>
+            </div>
+          )}
+
+          {aiAnalysis && aiAnalysis.processing_status === 'FAILED' && (
+            <div className="rounded-xl border border-amber-800/60 bg-amber-950/40 p-4 space-y-1.5 text-xs text-amber-200">
+              <div className="flex items-center space-x-2 font-semibold text-amber-300">
+                <AlertTriangle className="h-4 w-4 text-amber-400" />
+                <span>AI analysis is currently unavailable.</span>
+              </div>
+              <p className="text-[11px] text-amber-300/80 leading-relaxed">
+                Your report has still been saved safely. {aiAnalysis.error_message || 'The AI service encountered a temporary error.'}
+              </p>
+            </div>
+          )}
+
+          {aiAnalysis && (aiAnalysis.processing_status === 'COMPLETED' || aiAnalysis.processing_status === 'REVIEW_REQUIRED') && (
+            <div className={`rounded-xl border p-5 space-y-4 shadow-lg ${
+              aiAnalysis.processing_status === 'REVIEW_REQUIRED'
+                ? 'border-amber-800/80 bg-amber-950/30'
+                : 'border-slate-800 bg-slate-950'
+            }`}>
+              {/* Uncertainty Warning Banner if REVIEW_REQUIRED */}
+              {aiAnalysis.processing_status === 'REVIEW_REQUIRED' && (
+                <div className="rounded-lg border border-amber-700/80 bg-amber-950/60 p-3 flex items-start space-x-2 text-xs text-amber-200">
+                  <AlertTriangle className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-amber-300">AI Analysis Uncertain — Needs Verification</span>
+                    <p className="text-[11px] text-amber-300/80">
+                      The confidence score for this analysis is below threshold ({((aiAnalysis.confidence || 0) * 100).toFixed(0)}%). This result requires manual human review.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Badges & Confidence Row */}
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs border-b border-slate-800/60 pb-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800">
+                    Category: {aiAnalysis.category?.replace('_', ' ')}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-900 text-slate-200 border border-slate-700">
+                    Severity: {aiAnalysis.severity}
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-300">
+                  <span>AI Confidence:</span>
+                  <span className={`px-2 py-0.5 rounded font-mono ${
+                    (aiAnalysis.confidence || 0) >= 0.7
+                      ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                      : 'bg-amber-950 text-amber-400 border border-amber-800'
+                  }`}>
+                    {((aiAnalysis.confidence || 0) * 100).toFixed(0)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Summary */}
+              {aiAnalysis.summary && (
+                <div className="space-y-1 text-xs">
+                  <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">AI Summary</span>
+                  <p className="text-slate-200 leading-relaxed italic">"{aiAnalysis.summary}"</p>
+                </div>
+              )}
+
+              {/* Keywords */}
+              {aiAnalysis.keywords && aiAnalysis.keywords.length > 0 && (
+                <div className="space-y-1.5">
+                  <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Extracted Keywords</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {aiAnalysis.keywords.map((kw, idx) => (
+                      <span key={idx} className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-slate-900 text-[11px] text-cyan-300 border border-slate-800">
+                        <Tag className="h-3 w-3 text-cyan-400" />
+                        <span>{kw}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Observations */}
+              {aiAnalysis.observations && aiAnalysis.observations.length > 0 && (
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Factual Observations</span>
+                  <ul className="space-y-1 text-xs text-slate-300 list-disc list-inside">
+                    {aiAnalysis.observations.map((obs, idx) => (
+                      <li key={idx}>{obs}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
 
         {/* Spatial Location Details */}
         <div className="space-y-2 border-t border-slate-800/80 pt-4">

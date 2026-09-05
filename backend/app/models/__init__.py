@@ -8,7 +8,8 @@ from app.models.report import (
     ReportCategory,
     ReportSeverity,
     ReportStatus,
-    VerificationStatus
+    VerificationStatus,
+    ProcessingStatus
 )
 from app.models.hotspot import Hotspot, HotspotReport
 from app.models.audit import AuditLog
@@ -25,6 +26,7 @@ __all__ = [
     "ReportSeverity",
     "ReportStatus",
     "VerificationStatus",
+    "ProcessingStatus",
     "Hotspot",
     "HotspotReport",
     "AuditLog"

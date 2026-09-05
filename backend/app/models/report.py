@@ -49,9 +49,18 @@ class VerificationStatus(str, enum.Enum):
     REJECTED = "REJECTED"
 
 
+class ProcessingStatus(str, enum.Enum):
+    PENDING = "PENDING"
+    PROCESSING = "PROCESSING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    REVIEW_REQUIRED = "REVIEW_REQUIRED"
+
+
 # Use PostGIS Geometry in Postgres, standard Text/WKT in testing/SQLite
 use_postgis = Geometry is not None and os.getenv("ENVIRONMENT") != "testing"
 use_pgvector = Vector is not None and os.getenv("ENVIRONMENT") != "testing"
+
 
 
 class Report(Base):
@@ -100,13 +109,34 @@ class AIAnalysis(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     report_id = Column(UUID(as_uuid=True), ForeignKey("reports.id", ondelete="CASCADE"), nullable=False, index=True)
+    
+    provider = Column(String(50), nullable=True)
+    model = Column(String(100), nullable=True)
+    model_version = Column(String(50), nullable=True)
+    prompt_version = Column(String(50), nullable=True)
+    
+    category = Column(Enum(ReportCategory, name="reportcategory"), nullable=True)
+    severity = Column(Enum(ReportSeverity, name="reportseverity"), nullable=True)
     summary = Column(Text, nullable=True)
+    confidence = Column(Float, nullable=True)
+    
+    keywords = Column(JSON, nullable=True)
+    observations = Column(JSON, nullable=True)
+    embedding = Column(Vector(1536) if use_pgvector else JSON, nullable=True)
+    
+    processing_status = Column(Enum(ProcessingStatus, name="processingstatus"), default=ProcessingStatus.PENDING, nullable=False, index=True)
+    error_message = Column(Text, nullable=True)
+    
+    # Backward compatibility fields
     detected_category = Column(String(100), nullable=True)
     confidence_score = Column(Float, nullable=True)
     raw_response = Column(JSON, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    completed_at = Column(DateTime, nullable=True)
 
     report = relationship("Report", back_populates="ai_analyses")
+
 
 
 class ReportRelation(Base):

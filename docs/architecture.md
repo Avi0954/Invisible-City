@@ -40,6 +40,53 @@ To maintain production-quality reliability while avoiding DevOps overhead during
 - `app/db/`: Database session management, engine pooling, health probes.
 - `app/middleware/`: Global ASGI middleware (Request ID correlation, CORS, error interceptors).
 
-## Data Schema & Future Extensions
-- **Geographic Queries**: PostGIS `GEOMETRY(Point, 4326)` for spatial proximity clustering.
-- **AI Embeddings**: `vector(1536)` fields with `pgvector` for semantic issue similarity indexing.
+## Phase 4: AI Analysis Layer Architecture
+
+```
+                               ┌─────────────────────────┐
+                               │   POST /reports/{id}/   │
+                               │        analyze          │
+                               └────────────┬────────────┘
+                                            │
+                                            ▼
+                               ┌─────────────────────────┐
+                               │  ReportAnalysisService  │
+                               │  (State Lock & Retry)   │
+                               └────────────┬────────────┘
+                                            │
+                     ┌──────────────────────┴──────────────────────┐
+                     ▼                                             ▼
+        ┌─────────────────────────┐                   ┌─────────────────────────┐
+        │   LocalAIProvider       │                   │    OpenAIProvider       │
+        │  (Deterministic Dev)    │                   │   (Production API)      │
+        └────────────┬────────────┘                   └────────────┬────────────┘
+                     │                                             │
+                     └──────────────────────┬──────────────────────┘
+                                            │
+                                            ▼
+                               ┌─────────────────────────┐
+                               │   Pydantic Validation   │
+                               │ (Category, Severity,    │
+                               │  Confidence, Keywords)  │
+                               └────────────┬────────────┘
+                                            │
+                                            ▼
+                               ┌─────────────────────────┐
+                               │ Confidence & Vector Check│
+                               │   (>= 0.70 Threshold)   │
+                               └────────────┬────────────┘
+                                            │
+                    ┌───────────────────────┴───────────────────────┐
+                    ▼                                               ▼
+     ┌─────────────────────────────┐                 ┌─────────────────────────────┐
+     │ status = COMPLETED          │                 │ status = REVIEW_REQUIRED    │
+     │ Store vector(1536) embedding│                 │ Flag for Human Review       │
+     └─────────────────────────────┘                 └─────────────────────────────┘
+```
+
+- **Provider Abstraction (`AIProvider`)**: Clean separation between development mock (`LocalAIProvider`) and production AI APIs (`OpenAIProvider`). Controlled strictly via `AI_PROVIDER` env variable.
+- **Strict Validation Pipeline**: Raw AI JSON responses must pass Pydantic `AIAnalysisResult` schema validation (controlled `ReportCategory` & `ReportSeverity` enums, confidence `$0.0 \le c \le 1.0$`).
+- **Processing Status Lifecycle**: `PENDING` $\rightarrow$ `PROCESSING` $\rightarrow$ `COMPLETED` | `REVIEW_REQUIRED` | `FAILED`.
+- **Assistive AI Principle**: AI outputs below `AI_CONFIDENCE_THRESHOLD` (0.70) transition to `REVIEW_REQUIRED`. AI insights complement citizen reports without replacing source records.
+- **Vector Embeddings**: 1536-dimensional float vectors validated and stored in `ai_analyses.embedding` and `reports.embedding` for Phase 6 similarity indexing.
+

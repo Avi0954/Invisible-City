@@ -1,5 +1,5 @@
 import json
-from typing import List, Union
+from typing import List, Union, Optional
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -31,6 +31,16 @@ class Settings(BaseSettings):
     MAX_FILE_SIZE_MB: int = 10
     ALLOWED_IMAGE_MIMES: List[str] = ["image/jpeg", "image/png", "image/webp"]
     ALLOWED_IMAGE_EXTENSIONS: List[str] = [".jpg", ".jpeg", ".png", ".webp"]
+
+    # AI Layer Settings
+    AI_PROVIDER: str = "local"  # 'local' or 'openai'
+    AI_MODEL: str = "gpt-4o-mini"
+    AI_EMBEDDING_MODEL: str = "text-embedding-3-small"
+    AI_CONFIDENCE_THRESHOLD: float = 0.70
+    AI_TIMEOUT_SECONDS: int = 30
+    AI_MAX_RETRIES: int = 2
+    AI_PROMPT_VERSION: str = "v1"
+    OPENAI_API_KEY: Optional[str] = None
 
     # CORS Configuration
     CORS_ORIGINS: Union[List[str], str] = [
