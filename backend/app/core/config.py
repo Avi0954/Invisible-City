@@ -76,6 +76,15 @@ class Settings(BaseSettings):
         "http://localhost:3000",
     ]
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_database_url(cls, v: Optional[str]) -> str:
+        if isinstance(v, str) and v.strip():
+            if v.startswith("postgres://"):
+                return v.replace("postgres://", "postgresql://", 1)
+            return v
+        return "postgresql://postgres:postgres@localhost:5432/invisible_city"
+
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
