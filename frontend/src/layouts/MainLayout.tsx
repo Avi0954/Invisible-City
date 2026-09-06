@@ -1,23 +1,18 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header } from '../components/common/Header';
-import { Sidebar } from '../components/common/Sidebar';
-import { MobileNav } from '../components/common/MobileNav';
 import { Footer } from '../components/common/Footer';
 
 export const MainLayout: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-surface font-body-md text-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-container">
       <Header />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full pb-20 md:pb-8">
-          <Outlet />
-        </main>
-      </div>
-      <MobileNav />
+      <main className="w-full pt-16 bg-surface flex-1">
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );
 };
+
 

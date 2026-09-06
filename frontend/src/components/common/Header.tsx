@@ -1,71 +1,117 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { HealthBadge } from './HealthBadge';
-import { Building2, PlusCircle, LogIn, LogOut, User as UserIcon, ShieldCheck } from 'lucide-react';
+import { ShieldCheck, User as UserIcon, LogOut } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo & Name */}
-        <Link to="/" className="flex items-center space-x-3 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-400 text-white shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
-            <Building2 className="h-5 w-5" />
-          </div>
-          <div>
-            <span className="text-lg font-bold tracking-tight text-white group-hover:text-cyan-400 transition-colors">
+    <header className="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest border-b border-surface-container-highest">
+      <div className="h-16 max-w-max-width-content mx-auto px-margin-mobile lg:px-margin-desktop flex items-center justify-between gap-space-lg">
+        {/* Brand Logo & Title */}
+        <div className="flex items-center gap-space-md">
+          <Link to="/" className="flex items-center gap-space-sm group focus:outline-none">
+            <div className="h-8 w-8 rounded bg-primary flex items-center justify-center text-on-primary font-bold font-headline-sm">
+              IC
+            </div>
+            <span className="font-headline-sm text-headline-sm text-on-surface tracking-tight font-semibold">
               Invisible City
             </span>
-            <span className="block text-[10px] font-semibold uppercase tracking-wider text-cyan-400/80">
-              Civic Intelligence Platform
-            </span>
-          </div>
-        </Link>
+          </Link>
+          <span className="hidden sm:inline-flex items-center px-space-xs py-space-2xs bg-surface-container-high rounded-lg text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider font-semibold border border-outline-variant/40">
+            Civic Intelligence
+          </span>
+        </div>
 
-        {/* Center/Right Nav & Actions */}
-        <div className="flex items-center space-x-4">
+        {/* Center Nav Navigation */}
+        <nav className="hidden md:flex items-center gap-space-lg h-full">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              isActive
+                ? 'inline-flex items-center h-full px-space-2xs text-primary font-semibold border-b-2 border-primary'
+                : 'inline-flex items-center h-full px-space-2xs text-on-surface-variant font-title-md text-title-md transition-colors hover:text-on-surface'
+            }
+          >
+            Overview
+          </NavLink>
+          <NavLink
+            to="/map"
+            className={({ isActive }) =>
+              isActive
+                ? 'inline-flex items-center h-full px-space-2xs text-primary font-semibold border-b-2 border-primary'
+                : 'inline-flex items-center h-full px-space-2xs text-on-surface-variant font-title-md text-title-md transition-colors hover:text-on-surface'
+            }
+          >
+            Explore
+          </NavLink>
+          <NavLink
+            to="/report"
+            className={({ isActive }) =>
+              isActive
+                ? 'inline-flex items-center h-full px-space-2xs text-primary font-semibold border-b-2 border-primary'
+                : 'inline-flex items-center h-full px-space-2xs text-on-surface-variant font-title-md text-title-md transition-colors hover:text-on-surface'
+            }
+          >
+            Report an Issue
+          </NavLink>
+          <NavLink
+            to="/my-reports"
+            className={({ isActive }) =>
+              isActive
+                ? 'inline-flex items-center h-full px-space-2xs text-primary font-semibold border-b-2 border-primary'
+                : 'inline-flex items-center h-full px-space-2xs text-on-surface-variant font-title-md text-title-md transition-colors hover:text-on-surface'
+            }
+          >
+            My Reports
+          </NavLink>
+          {user?.role === 'ADMIN' && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                isActive
+                  ? 'inline-flex items-center h-full px-space-2xs text-primary font-semibold border-b-2 border-primary'
+                  : 'inline-flex items-center h-full px-space-2xs text-on-surface-variant font-title-md text-title-md transition-colors hover:text-on-surface'
+              }
+            >
+              Admin Triage
+            </NavLink>
+          )}
+        </nav>
+
+        {/* Right Action Buttons */}
+        <div className="flex items-center gap-space-sm">
+          <Link
+            to="/report"
+            className="hidden sm:inline-flex items-center justify-center h-10 px-space-md bg-primary-container text-on-primary rounded-lg font-title-md text-title-md transition-colors hover:bg-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2"
+          >
+            <span className="material-symbols-outlined text-[18px] mr-space-xs">add_circle</span>
+            <span>Report an Issue</span>
+          </Link>
+
           {isAuthenticated ? (
-
-            <>
-              <Link
-                to="/report"
-                className="hidden sm:inline-flex items-center space-x-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-900/40 transition-all hover:shadow-cyan-600/30"
-              >
-                <PlusCircle className="h-4 w-4" />
-                <span>Report Problem</span>
-              </Link>
-
-              {/* User Profile Badge */}
-              <div className="flex items-center space-x-3 pl-2 border-l border-slate-800">
-                <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-cyan-400 border border-slate-700">
-                    {user?.role === 'ADMIN' ? <ShieldCheck className="h-4 w-4 text-cyan-300" /> : <UserIcon className="h-4 w-4" />}
-                  </div>
-                  <div className="hidden md:block text-left">
-                    <div className="text-xs font-semibold text-white leading-tight">{user?.name}</div>
-                    <div className="text-[10px] text-cyan-400 font-medium uppercase tracking-wider">{user?.role}</div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={logout}
-                  title="Sign Out"
-                  className="p-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
+            <div className="flex items-center gap-space-xs">
+              <div className="hidden sm:flex items-center gap-2 px-2 py-1 bg-surface-container rounded-lg border border-surface-container-highest">
+                <span className="text-xs font-semibold text-on-surface">{user?.name}</span>
+                <span className="text-[10px] font-mono text-primary font-bold uppercase">{user?.role}</span>
               </div>
-            </>
+              <button
+                onClick={logout}
+                title="Sign Out"
+                className="inline-flex items-center justify-center h-10 px-space-sm text-on-surface-variant font-title-md text-title-md rounded-lg hover:bg-surface-container hover:text-on-surface transition-colors"
+              >
+                <LogOut className="h-4 w-4 mr-1" />
+                <span>Sign Out</span>
+              </button>
+            </div>
           ) : (
             <Link
               to="/login"
-              className="inline-flex items-center space-x-1.5 rounded-lg border border-slate-700 bg-slate-900 hover:bg-slate-800 px-3.5 py-2 text-sm font-medium text-slate-200 transition-colors"
+              className="inline-flex items-center justify-center h-10 px-space-sm text-on-surface font-title-md text-title-md rounded-lg hover:bg-surface-container transition-colors"
             >
-              <LogIn className="h-4 w-4 text-slate-400" />
-              <span>Sign In</span>
+              Sign In
             </Link>
           )}
         </div>
@@ -73,3 +119,4 @@ export const Header: React.FC = () => {
     </header>
   );
 };
+
