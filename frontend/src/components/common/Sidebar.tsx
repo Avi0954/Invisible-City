@@ -16,17 +16,17 @@ export const Sidebar: React.FC = () => {
 
   const navItems = [
     { to: '/', label: 'Overview', icon: LayoutDashboard },
-    { to: '/report', label: 'Report Issue', icon: PlusCircle },
+    { to: '/report', label: 'Report an Issue', icon: PlusCircle },
     { to: '/my-reports', label: 'My Reports', icon: FileText },
-    { to: '/map', label: 'Spatial Map', icon: MapPin },
-    ...(isAdmin ? [{ to: '/admin', label: 'Admin Triage', icon: ShieldCheck }] : []),
+    { to: '/map', label: 'Explore Issues', icon: MapPin },
+    ...(isAdmin ? [{ to: '/admin', label: 'Review Queue', icon: ShieldCheck }] : []),
   ];
 
   return (
-    <aside className="w-64 flex-shrink-0 border-r border-slate-800/80 bg-slate-950/60 p-4 hidden md:block">
+    <aside className="w-64 flex-shrink-0 border-r border-[#e5e2da] bg-[#f1eee7] p-4 hidden md:block font-sans text-[#1c1c18]">
       <div className="space-y-6">
         <div>
-          <h3 className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          <h3 className="px-3 text-xs font-semibold text-[#787770] uppercase tracking-wider font-headline">
             Navigation
           </h3>
           <nav className="mt-2 space-y-1">
@@ -38,10 +38,10 @@ export const Sidebar: React.FC = () => {
                   to={item.to}
                   end={item.to === '/'}
                   className={({ isActive }) =>
-                    `flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    `flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-800/50 shadow-sm'
-                        : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                        ? 'bg-[#06291b] text-white shadow-sm'
+                        : 'text-[#484742] hover:bg-[#e5e2da] hover:text-[#1c1c18]'
                     }`
                   }
                 >
@@ -55,17 +55,17 @@ export const Sidebar: React.FC = () => {
 
         {!isAuthenticated && (
           <div>
-            <h3 className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <h3 className="px-3 text-xs font-semibold text-[#787770] uppercase tracking-wider font-headline">
               Account
             </h3>
             <nav className="mt-2 space-y-1">
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  `flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  `flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-800/50 shadow-sm'
-                      : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                      ? 'bg-[#06291b] text-white shadow-sm'
+                      : 'text-[#484742] hover:bg-[#e5e2da] hover:text-[#1c1c18]'
                   }`
                 }
               >
@@ -75,10 +75,10 @@ export const Sidebar: React.FC = () => {
               <NavLink
                 to="/register"
                 className={({ isActive }) =>
-                  `flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  `flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-cyan-950/60 text-cyan-400 border border-cyan-800/50 shadow-sm'
-                      : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                      ? 'bg-[#06291b] text-white shadow-sm'
+                      : 'text-[#484742] hover:bg-[#e5e2da] hover:text-[#1c1c18]'
                   }`
                 }
               >
@@ -90,10 +90,10 @@ export const Sidebar: React.FC = () => {
         )}
 
         {/* Product Context Card */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 text-xs text-slate-400">
-          <div className="font-semibold text-slate-200 mb-1">About Invisible City</div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">
-            Turn individual reports into a clearer picture of what is happening across the city.
+        <div className="rounded-2xl border border-[#e5e2da] bg-[#fcf9f2] p-4 text-xs text-[#484742]">
+          <div className="font-bold text-[#1c1c18] mb-1 font-headline">About Invisible City</div>
+          <p className="text-[11px] text-[#787770] leading-relaxed">
+            Making local civic issues easier to see, understand, and act on.
           </p>
         </div>
 
@@ -101,3 +101,4 @@ export const Sidebar: React.FC = () => {
     </aside>
   );
 };
+

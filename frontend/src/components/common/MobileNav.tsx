@@ -16,12 +16,12 @@ export const MobileNav: React.FC = () => {
     { to: '/', label: 'Overview', icon: LayoutDashboard },
     { to: '/report', label: 'Report', icon: PlusCircle },
     { to: '/my-reports', label: 'My Reports', icon: FileText },
-    { to: '/map', label: 'Map', icon: MapPin },
-    ...(isAdmin ? [{ to: '/admin', label: 'Admin', icon: ShieldCheck }] : []),
+    { to: '/map', label: 'Explore', icon: MapPin },
+    ...(isAdmin ? [{ to: '/admin', label: 'Review', icon: ShieldCheck }] : []),
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 md:hidden px-2 py-1.5 shadow-2xl">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0c1813]/95 backdrop-blur-lg border-t border-[#2d3a33] md:hidden px-2 py-1.5 shadow-lg font-sans">
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -31,8 +31,8 @@ export const MobileNav: React.FC = () => {
               to={item.to}
               end={item.to === '/'}
               className={({ isActive }) =>
-                `flex flex-col items-center py-1 px-3 rounded-lg text-[11px] font-medium transition-all ${
-                  isActive ? 'text-cyan-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
+                `flex flex-col items-center py-1 px-3 rounded-xl text-[11px] font-medium transition-all ${
+                  isActive ? 'text-[#fcf9f2] font-semibold bg-[#2f685f]/30' : 'text-[#a3b3aa] hover:text-[#fcf9f2]'
                 }`
               }
             >
@@ -45,3 +45,4 @@ export const MobileNav: React.FC = () => {
     </nav>
   );
 };
+

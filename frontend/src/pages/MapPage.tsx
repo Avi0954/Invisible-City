@@ -5,16 +5,14 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useMapReports } from '../hooks/useMapReports';
 import { useHotspots } from '../hooks/useIntelligence';
-import { MapReportItem, MapQueryParams } from '../types/map';
+import { MapQueryParams } from '../types/map';
 import { ReportCategory, ReportSeverity, ReportStatus } from '../types/report';
 import {
   MapPin,
   Filter,
-  Layers,
   Crosshair,
   AlertTriangle,
   ExternalLink,
-  Clock,
   Sparkles,
   RefreshCw,
   Info
@@ -22,20 +20,20 @@ import {
 
 // Custom Marker DivIcons with severity styling
 const createSeverityIcon = (severity: ReportSeverity) => {
-  let colorClass = 'bg-cyan-500 border-cyan-300 text-cyan-950';
+  let colorClass = 'bg-[#2f685f] border-white text-white';
   let pulse = false;
 
   if (severity === 'CRITICAL' || severity === 'HIGH') {
-    colorClass = 'bg-red-500 border-red-200 text-white';
+    colorClass = 'bg-red-700 border-red-200 text-white';
     pulse = true;
   } else if (severity === 'MEDIUM') {
-    colorClass = 'bg-amber-500 border-amber-200 text-amber-950';
+    colorClass = 'bg-amber-600 border-amber-200 text-white';
   }
 
   const html = `
     <div class="relative flex items-center justify-center">
-      ${pulse ? '<span class="absolute inline-flex h-8 w-8 rounded-full bg-red-500 opacity-60 animate-ping"></span>' : ''}
-      <div class="relative inline-flex h-6 w-6 items-center justify-center rounded-full border-2 ${colorClass} shadow-lg font-bold text-[10px]">
+      ${pulse ? '<span class="absolute inline-flex h-8 w-8 rounded-full bg-red-600 opacity-40 animate-ping"></span>' : ''}
+      <div class="relative inline-flex h-6 w-6 items-center justify-center rounded-full border-2 ${colorClass} shadow-md font-bold text-[10px]">
         !
       </div>
     </div>
@@ -115,7 +113,7 @@ export const MapPage: React.FC = () => {
     limit: 500,
   };
 
-  const { data, isLoading, isError, setParams, isFetching } = useMapReports(initialParams);
+  const { data, setParams, isFetching, isError } = useMapReports(initialParams);
   const { data: hotspotsData } = useHotspots({ status: 'ACTIVE' });
 
   // Handle bounds update from map move/zoom
@@ -126,7 +124,6 @@ export const MapPage: React.FC = () => {
       min_longitude: number;
       max_longitude: number;
     }) => {
-      // Calculate date_from if date filter is set
       let date_from: string | undefined = undefined;
       if (dateFilter === '7d') {
         const d = new Date();
@@ -164,83 +161,83 @@ export const MapPage: React.FC = () => {
         const lng = pos.coords.longitude;
         setRecenterPos([lat, lng]);
       },
-      (err) => {
-        setLocationError('Location access denied or unavailable. You can still explore manually.');
+      () => {
+        setLocationError('Location access unavailable. You can navigate the map manually.');
       },
       { timeout: 10000 }
     );
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 font-sans text-[#1c1c18]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center space-x-2">
-            <MapPin className="h-6 w-6 text-cyan-400" />
-            <span>Spatial Map</span>
+          <h1 className="text-2xl font-bold text-[#1c1c18] tracking-tight flex items-center space-x-2 font-headline">
+            <MapPin className="h-6 w-6 text-[#2f685f]" />
+            <span>See what's happening around you</span>
           </h1>
-          <p className="text-xs text-slate-400">
-            Interactive spatial map displaying community reports across the city.
+          <p className="text-xs text-[#787770] font-sans">
+            Explore nearby issues and see where problems may be connected.
           </p>
         </div>
 
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setShowHotspots(!showHotspots)}
-            className={`flex items-center space-x-1.5 rounded-xl border px-3.5 py-2 text-xs font-medium transition-colors ${
+            className={`flex items-center space-x-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold transition-colors ${
               showHotspots
-                ? 'border-amber-800 bg-amber-950/80 text-amber-300'
-                : 'border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800'
+                ? 'border-amber-300 bg-amber-50 text-amber-900'
+                : 'border-[#d0cdc5] bg-[#f1eee7] text-[#484742] hover:bg-[#e5e2da]'
             }`}
           >
-            <Sparkles className="h-4 w-4 text-amber-400" />
-            <span>Hotspot Layer ({hotspotsData?.count ?? 0})</span>
+            <Sparkles className="h-4 w-4 text-amber-600" />
+            <span>Possible Hotspots ({hotspotsData?.count ?? 0})</span>
           </button>
 
           <button
             onClick={handleCurrentLocation}
-            className="flex items-center space-x-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 px-3.5 py-2 text-xs font-medium text-slate-200 transition-colors"
+            className="flex items-center space-x-1.5 rounded-xl border border-[#d0cdc5] bg-[#f1eee7] hover:bg-[#e5e2da] px-3.5 py-2 text-xs font-semibold text-[#1c1c18] transition-colors"
             title="Locate Me"
           >
-            <Crosshair className="h-4 w-4 text-cyan-400" />
-            <span>Current Location</span>
+            <Crosshair className="h-4 w-4 text-[#2f685f]" />
+            <span>Near Me</span>
           </button>
         </div>
       </div>
 
       {locationError && (
-        <div className="rounded-xl border border-amber-800 bg-amber-950/60 p-3 text-xs text-amber-300 flex items-center space-x-2">
-          <Info className="h-4 w-4 text-amber-400 flex-shrink-0" />
+        <div className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 flex items-center space-x-2">
+          <Info className="h-4 w-4 text-amber-600 flex-shrink-0" />
           <span>{locationError}</span>
         </div>
       )}
 
       {/* Filter Control Bar */}
-      <div className="flex flex-wrap items-center gap-3 p-3.5 rounded-xl border border-slate-800 bg-slate-900/80 text-xs">
-        <div className="flex items-center space-x-1.5 text-slate-400 pr-2 border-r border-slate-800 font-semibold">
-          <Filter className="h-3.5 w-3.5 text-cyan-400" />
-          <span>Filters:</span>
+      <div className="flex flex-wrap items-center gap-3 p-3.5 rounded-2xl border border-[#e5e2da] bg-[#f1eee7] text-xs">
+        <div className="flex items-center space-x-1.5 text-[#484742] pr-2 border-r border-[#d0cdc5] font-semibold">
+          <Filter className="h-3.5 w-3.5 text-[#2f685f]" />
+          <span>Category:</span>
         </div>
 
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
+          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
         >
-          <option value="">All Categories</option>
+          <option value="">All Issues</option>
           <option value="POTHOLE">Potholes & Roads</option>
-          <option value="GARBAGE">Garbage & Waste</option>
-          <option value="STREETLIGHT">Streetlights</option>
-          <option value="WATER_LEAK">Water Leaks</option>
+          <option value="WATER_LEAK">Water & Drainage</option>
+          <option value="STREETLIGHT">Lighting</option>
+          <option value="GARBAGE">Garbage & Sanitation</option>
           <option value="DAMAGED_INFRASTRUCTURE">Damaged Infrastructure</option>
-          <option value="OTHER">Other</option>
+          <option value="OTHER">Other Issues</option>
         </select>
 
         <select
           value={severity}
           onChange={(e) => setSeverity(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
+          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
         >
           <option value="">All Severities</option>
           <option value="LOW">Low</option>
@@ -252,39 +249,38 @@ export const MapPage: React.FC = () => {
         <select
           value={reportStatus}
           onChange={(e) => setReportStatus(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
+          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
         >
           <option value="">All Statuses</option>
           <option value="OPEN">Open</option>
           <option value="VERIFIED">Verified</option>
           <option value="IN_PROGRESS">In Progress</option>
           <option value="RESOLVED">Resolved</option>
-          <option value="REJECTED">Rejected</option>
         </select>
 
         <select
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
-          className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:outline-none"
+          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
         >
           <option value="all">Any Time</option>
           <option value="7d">Last 7 Days</option>
           <option value="30d">Last 30 Days</option>
         </select>
 
-        <div className="ml-auto text-slate-400 font-mono text-[11px] flex items-center space-x-2">
+        <div className="ml-auto text-[#787770] text-xs flex items-center space-x-2 font-mono">
           {isFetching && (
-            <div className="flex items-center space-x-1 text-cyan-400 animate-pulse">
+            <div className="flex items-center space-x-1 text-[#06291b] animate-pulse">
               <RefreshCw className="h-3 w-3 animate-spin" />
-              <span>Fetching Viewport...</span>
+              <span>Updating area...</span>
             </div>
           )}
           <span>Visible Reports: {data?.count ?? 0}</span>
         </div>
       </div>
 
-      {/* Map Container Container */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 h-[600px] shadow-2xl">
+      {/* Map Container */}
+      <div className="relative overflow-hidden rounded-2xl border border-[#e5e2da] bg-[#fcf9f2] h-[580px] shadow-sm">
         <MapContainer
           center={defaultCenter}
           zoom={12}
@@ -306,45 +302,45 @@ export const MapPage: React.FC = () => {
               center={[hotspot.center_latitude, hotspot.center_longitude]}
               radius={hotspot.radius}
               pathOptions={{
-                color: '#f59e0b',
+                color: '#d97706',
                 fillColor: '#f59e0b',
-                fillOpacity: 0.22,
+                fillOpacity: 0.2,
                 weight: 2,
                 dashArray: '6, 6',
               }}
             >
               <Popup className="custom-leaflet-popup">
-                <div className="p-3 space-y-2 max-w-xs text-slate-900">
+                <div className="p-3 space-y-2 max-w-xs text-[#1c1c18]">
                   <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-600 text-white flex items-center space-x-1">
-                      <Sparkles className="h-3 w-3 inline mr-1" />
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 flex items-center space-x-1">
+                      <Sparkles className="h-3 w-3 inline mr-1 text-amber-700" />
                       <span>Possible Hotspot</span>
                     </span>
-                    <span className="text-[11px] font-bold text-amber-700 font-mono">
+                    <span className="text-[11px] font-bold text-amber-800 font-mono">
                       {((hotspot.confidence || 0) * 100).toFixed(0)}% confidence
                     </span>
                   </div>
 
-                  <h4 className="font-bold text-sm leading-tight text-slate-950">{hotspot.title}</h4>
+                  <h4 className="font-bold text-sm leading-tight text-[#1c1c18]">{hotspot.title}</h4>
 
-                  <div className="grid grid-cols-2 gap-1.5 text-[11px] bg-slate-100 p-2 rounded border border-slate-200">
+                  <div className="grid grid-cols-2 gap-1.5 text-[11px] bg-[#f1eee7] p-2 rounded-lg border border-[#e5e2da]">
                     <div>
-                      <span className="text-slate-500 block text-[10px]">Reports:</span>
-                      <span className="font-bold">{hotspot.report_count} complaints</span>
+                      <span className="text-[#787770] block text-[10px]">Reports:</span>
+                      <span className="font-bold text-[#1c1c18]">{hotspot.report_count} reports</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block text-[10px]">Radius:</span>
-                      <span className="font-bold">{Math.round(hotspot.radius)}m</span>
+                      <span className="text-[#787770] block text-[10px]">Radius:</span>
+                      <span className="font-bold text-[#1c1c18]">{Math.round(hotspot.radius)}m</span>
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-700 leading-relaxed font-medium bg-amber-50 p-2 rounded border border-amber-200">
-                    {hotspot.explanation}
+                  <p className="text-xs text-[#484742] leading-relaxed font-medium bg-amber-50/80 p-2 rounded-lg border border-amber-200">
+                    Multiple reports in this area may indicate a recurring issue.
                   </p>
 
                   <div className="flex flex-wrap gap-1">
                     {hotspot.categories.map((c, idx) => (
-                      <span key={idx} className="px-1.5 py-0.5 rounded text-[9px] bg-slate-200 text-slate-800 font-medium">
+                      <span key={idx} className="px-2 py-0.5 rounded text-[9px] bg-[#e5e2da] text-[#1c1c18] font-medium">
                         {c.replace('_', ' ')}
                       </span>
                     ))}
@@ -362,34 +358,34 @@ export const MapPage: React.FC = () => {
               icon={createSeverityIcon(report.severity)}
             >
               <Popup className="custom-leaflet-popup">
-                <div className="p-2 space-y-2 max-w-xs text-slate-900">
+                <div className="p-2 space-y-2 max-w-xs text-[#1c1c18]">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 text-white uppercase">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1c1c18] text-white uppercase">
                       {report.category.replace('_', ' ')}
                     </span>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-white ${
-                      report.severity === 'CRITICAL' || report.severity === 'HIGH' ? 'bg-red-600' : 'bg-amber-600'
+                      report.severity === 'CRITICAL' || report.severity === 'HIGH' ? 'bg-red-700' : 'bg-amber-600'
                     }`}>
                       {report.severity}
                     </span>
                   </div>
 
-                  <h4 className="font-bold text-sm leading-tight text-slate-950">{report.title}</h4>
-                  <p className="text-xs text-slate-600 line-clamp-2">{report.description}</p>
+                  <h4 className="font-bold text-sm leading-tight text-[#1c1c18]">{report.title}</h4>
+                  <p className="text-xs text-[#484742] line-clamp-2">{report.description}</p>
 
                   {report.thumbnail_url && (
                     <img
                       src={report.thumbnail_url}
                       alt="Report evidence"
-                      className="h-24 w-full object-cover rounded border border-slate-200"
+                      className="h-24 w-full object-cover rounded-lg border border-[#e5e2da]"
                     />
                   )}
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200">
+                  <div className="flex items-center justify-between text-[11px] text-[#787770] pt-1 border-t border-[#e5e2da]">
                     <span>{new Date(report.created_at).toLocaleDateString()}</span>
                     <Link
                       to={`/reports/${report.id}`}
-                      className="inline-flex items-center space-x-1 font-bold text-cyan-600 hover:text-cyan-700"
+                      className="inline-flex items-center space-x-1 font-bold text-[#06291b] hover:underline"
                     >
                       <span>View Details</span>
                       <ExternalLink className="h-3 w-3" />
@@ -403,27 +399,28 @@ export const MapPage: React.FC = () => {
 
         {/* Empty State Overlay */}
         {data && data.reports.length === 0 && !isFetching && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-slate-800 bg-slate-950/90 backdrop-blur-md px-4 py-2 text-xs text-slate-400 shadow-xl flex items-center space-x-2">
-            <Info className="h-4 w-4 text-cyan-400" />
-            <span>No civic reports found in this visible map viewport.</span>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-[#e5e2da] bg-[#fcf9f2]/95 backdrop-blur-md px-4 py-2 text-xs text-[#484742] shadow-lg flex items-center space-x-2 font-medium">
+            <Info className="h-4 w-4 text-[#2f685f]" />
+            <span>No reports found in this map area. Zoom out or move the map to explore.</span>
           </div>
         )}
 
         {/* Truncated Results Warning */}
         {data && data.truncated && (
-          <div className="absolute top-4 right-4 z-20 rounded-xl border border-amber-800 bg-amber-950/90 backdrop-blur-md px-3.5 py-2 text-xs text-amber-300 shadow-xl flex items-center space-x-2">
-            <AlertTriangle className="h-4 w-4 text-amber-400" />
-            <span>Results truncated to {data.limit} reports. Zoom in to see all issues.</span>
+          <div className="absolute top-4 right-4 z-20 rounded-xl border border-amber-300 bg-amber-50/95 backdrop-blur-md px-3.5 py-2 text-xs text-amber-900 shadow-md flex items-center space-x-2 font-medium">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <span>Showing top {data.limit} reports. Zoom in to see more detail.</span>
           </div>
         )}
 
         {/* API Error Overlay */}
         {isError && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-red-800 bg-red-950/90 backdrop-blur-md px-4 py-2 text-xs text-red-300 shadow-xl">
-            Unable to load spatial reports. Please refresh or try again.
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-red-300 bg-red-50/95 backdrop-blur-md px-4 py-2 text-xs text-red-800 shadow-md">
+            Unable to load map reports. Please try again.
           </div>
         )}
       </div>
     </div>
   );
 };
+

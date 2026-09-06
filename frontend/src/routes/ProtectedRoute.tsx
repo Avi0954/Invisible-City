@@ -12,8 +12,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = f
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center space-x-2 text-slate-400">
-        <div className="h-5 w-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+      <div className="flex h-64 items-center justify-center space-x-2 text-[#787770] font-sans">
+        <div className="h-5 w-5 rounded-full border-2 border-[#06291b] border-t-transparent animate-spin" />
         <span className="text-xs">Authenticating session...</span>
       </div>
     );
@@ -25,13 +25,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireAdmin = f
 
   if (requireAdmin && !isAdmin) {
     return (
-      <div className="rounded-2xl border border-red-900/60 bg-red-950/40 p-8 text-center space-y-4 my-10 max-w-lg mx-auto">
-        <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-900/40 text-red-400">
+      <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center space-y-4 my-10 max-w-lg mx-auto font-sans">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-800">
           <ShieldAlert className="h-6 w-6" />
         </div>
-        <h3 className="text-lg font-bold text-white">Admin Authorization Required</h3>
-        <p className="text-xs text-red-300/80">
-          Your account is registered with the <code className="text-red-200">CITIZEN</code> role. Only administrative municipal personnel can access this area.
+        <h3 className="text-lg font-bold text-[#1c1c18] font-headline">Reviewer Access Required</h3>
+        <p className="text-xs text-red-900 leading-relaxed">
+          Your account is registered with the resident role. Only municipal reviewers can access this area.
         </p>
       </div>
     );
