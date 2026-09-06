@@ -4,6 +4,20 @@ import { useReports } from '../hooks/useReports';
 import { useHotspots } from '../hooks/useIntelligence';
 import { Report } from '../types/report';
 import { HotspotItem } from '../types/intelligence';
+import {
+  PlusCircle,
+  Compass,
+  CheckCircle2,
+  ShieldCheck,
+  MapPin,
+  Sparkles,
+  ArrowRight,
+  FileText,
+  Layers,
+  Wrench,
+  Activity,
+  ChevronRight
+} from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const { data: reportsData } = useReports({ limit: 100 });
@@ -21,119 +35,132 @@ export const HomePage: React.FC = () => {
   const unverifiedStr = unverifiedCount < 10 ? `0${unverifiedCount}` : `${unverifiedCount}`;
 
   return (
-    <div className="flex flex-col w-full bg-surface">
-      {/* 1. HERO SECTION */}
-      <section className="w-full py-space-2xl lg:py-space-3xl">
-        <div className="max-w-max-width-content mx-auto px-margin-mobile lg:px-margin-desktop">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl lg:gap-space-2xl items-center">
-            {/* Left Editorial Copy */}
-            <div className="lg:col-span-6 flex flex-col items-start space-y-4">
-              <h1 className="font-display-lg text-display-lg-mobile lg:text-display-lg text-on-surface font-semibold tracking-tight text-balance leading-tight">
+    <div className="flex flex-col w-full bg-[#fcf9f2] font-sans text-[#1c1c18]">
+      {/* ==================================================
+          1. HERO SECTION
+         ================================================== */}
+      <section className="w-full py-12 lg:py-16 border-b border-[#e5e2da]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column (~52%) */}
+            <div className="lg:col-span-7 flex flex-col items-start space-y-6">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1c1c18] tracking-tight font-headline leading-tight text-balance">
                 Small problems can reveal{' '}
-                <span className="text-primary underline decoration-secondary-fixed-dim underline-offset-8">
+                <span className="text-[#06291b] underline decoration-[#2f685f]/40 underline-offset-8">
                   bigger problems.
                 </span>
               </h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
-                Invisible City helps communities turn individual civic reports into a clearer picture of what is happening around them, addressing root causes before they become major failures.
+              <p className="text-sm sm:text-base text-[#484742] max-w-2xl leading-relaxed">
+                Invisible City connects community reports to surface underlying issues, helping local teams address root causes before small cracks become major failures.
               </p>
-              <div className="flex flex-wrap items-center gap-space-md pt-space-md w-full sm:w-auto">
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
                 <Link
                   to="/report"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-lg py-3 rounded-lg bg-primary-container text-on-primary font-title-md text-title-md font-semibold hover:bg-primary transition-all shadow-sm"
+                  className="inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-[#06291b] hover:bg-[#0a3826] text-white font-headline text-sm font-semibold transition-all shadow-sm"
                 >
+                  <PlusCircle className="h-4 w-4" />
                   <span>Report an Issue</span>
-                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a
                   href="#explore-map"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-lg py-3 rounded-lg bg-surface-container-lowest border border-surface-container-highest text-on-surface font-title-md text-title-md font-medium hover:bg-surface-container transition-colors"
+                  className="inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl bg-[#f1eee7] hover:bg-[#e5e2da] text-[#1c1c18] border border-[#d0cdc5] font-headline text-sm font-semibold transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-secondary">explore</span>
+                  <Compass className="h-4 w-4 text-[#2f685f]" />
                   <span>Explore Nearby Issues</span>
                 </a>
               </div>
 
-              {/* Trust Badges */}
-              <div className="flex items-center gap-space-md pt-space-lg border-t border-surface-container-highest w-full text-on-surface-variant font-body-sm text-body-sm">
-                <div className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-secondary">verified_user</span>
-                  <span>Precinct-verified signals</span>
+              {/* Value Indicators */}
+              <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-[#e5e2da] w-full text-[#787770] text-xs">
+                <div className="flex items-center space-x-1.5 font-medium">
+                  <CheckCircle2 className="h-4 w-4 text-[#2f685f]" />
+                  <span>Community-verified signals</span>
                 </div>
-                <span className="text-outline-variant">•</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[18px] text-secondary">shield_with_heart</span>
-                  <span>No resident tracking</span>
+                <span>•</span>
+                <div className="flex items-center space-x-1.5 font-medium">
+                  <ShieldCheck className="h-4 w-4 text-[#2f685f]" />
+                  <span>Privacy-first reporting</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Schematic Visual */}
-            <div className="lg:col-span-6 relative">
-              <div className="bg-surface-container-lowest rounded-xl border border-surface-container-highest p-space-lg shadow-sm relative overflow-hidden">
-                {/* Title Block */}
-                <div className="flex items-center justify-between pb-space-sm border-b border-surface-container-high">
+            {/* Right Column (~48%) Visual Component */}
+            <div className="lg:col-span-5 relative w-full">
+              <div className="bg-[#f1eee7] rounded-2xl border border-[#e5e2da] p-5 shadow-sm space-y-4">
+                {/* Title Bar */}
+                <div className="flex items-center justify-between pb-3 border-b border-[#d0cdc5]">
                   <div>
-                    <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
-                      Issue Pattern
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#787770]">
+                      Connected Reports Preview
                     </span>
-                    <p className="font-title-md text-title-md text-on-surface font-semibold">Oak Street & 4th Avenue Incline</p>
+                    <p className="text-sm font-bold text-[#1c1c18] font-headline">Oak Street & 4th Avenue Area</p>
                   </div>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-label-sm font-label-sm bg-error-container text-on-error-container font-semibold uppercase tracking-wider">
-                    Priority Triage
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">
+                    Pattern Detected
                   </span>
                 </div>
 
-                {/* Map Canvas */}
-                <div className="my-space-md relative h-64 bg-surface-container-low rounded-lg p-space-md overflow-hidden border border-surface-container-high">
+                {/* Map Preview Schematic */}
+                <div className="relative h-56 bg-[#fcf9f2] rounded-xl p-4 overflow-hidden border border-[#e5e2da]">
                   <div
-                    className="absolute inset-0 opacity-40 pointer-events-none"
+                    className="absolute inset-0 opacity-25 pointer-events-none"
                     style={{
-                      backgroundImage: 'radial-gradient(#727973 1px, transparent 1px)',
+                      backgroundImage: 'radial-gradient(#787770 1px, transparent 1px)',
                       backgroundSize: '20px 20px'
                     }}
                   />
-                  <svg className="absolute inset-0 w-full h-full text-outline-variant" fill="none" viewBox="0 0 460 240">
-                    <path className="text-surface-container-highest" d="M 40 40 L 420 40" stroke="currentColor" strokeLinecap="round" strokeWidth="12" />
-                    <path className="text-surface-container-highest" d="M 40 180 L 420 180" stroke="currentColor" strokeLinecap="round" strokeWidth="12" />
-                    <path className="text-surface-container-highest" d="M 120 10 L 120 230" stroke="currentColor" strokeLinecap="round" strokeWidth="14" />
-                    <path className="text-surface-container-highest" d="M 320 10 L 320 230" stroke="currentColor" strokeLinecap="round" strokeWidth="14" />
+                  <svg className="absolute inset-0 w-full h-full text-[#e5e2da]" fill="none" viewBox="0 0 460 220">
+                    <path className="text-[#d0cdc5]" d="M 40 40 L 420 40" stroke="currentColor" strokeLinecap="round" strokeWidth="10" />
+                    <path className="text-[#d0cdc5]" d="M 40 170 L 420 170" stroke="currentColor" strokeLinecap="round" strokeWidth="10" />
+                    <path className="text-[#d0cdc5]" d="M 120 10 L 120 210" stroke="currentColor" strokeLinecap="round" strokeWidth="12" />
+                    <path className="text-[#d0cdc5]" d="M 320 10 L 320 210" stroke="currentColor" strokeLinecap="round" strokeWidth="12" />
                   </svg>
 
-                  <span className="absolute top-2 left-32 font-label-sm text-[10px] text-on-surface-variant font-semibold tracking-wider uppercase bg-surface-container-lowest px-1.5 py-0.5 rounded shadow-xs">
+                  <span className="absolute top-2 left-28 text-[10px] font-bold text-[#787770] uppercase bg-[#f1eee7] px-2 py-0.5 rounded border border-[#e5e2da]">
                     4th Ave
                   </span>
-                  <span className="absolute bottom-6 left-12 font-label-sm text-[10px] text-on-surface-variant font-semibold tracking-wider uppercase bg-surface-container-lowest px-1.5 py-0.5 rounded shadow-xs">
+                  <span className="absolute bottom-4 left-10 text-[10px] font-bold text-[#787770] uppercase bg-[#f1eee7] px-2 py-0.5 rounded border border-[#e5e2da]">
                     Oak Street Area
                   </span>
-                  <span className="absolute top-12 right-6 font-label-sm text-[10px] text-on-surface-variant font-semibold tracking-wider uppercase bg-surface-container-lowest px-1.5 py-0.5 rounded shadow-xs">
-                    Pine St
-                  </span>
 
-                  <div className="absolute bottom-3 right-3 bg-surface-container-lowest/95 backdrop-blur-sm border border-surface-container-highest px-2.5 py-1.5 rounded-lg flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold">
-                      Connected Cluster · 4 Points
+                  {/* Connected Cluster Pins */}
+                  <div className="absolute top-[80px] left-[115px]" title="Reported: Surface crack">
+                    <div className="w-4 h-4 rounded-full bg-[#06291b] flex items-center justify-center text-white border border-white shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#8ac9be]"></span>
+                    </div>
+                  </div>
+                  <div className="absolute top-[130px] left-[150px]" title="Reported: Pothole">
+                    <div className="w-4 h-4 rounded-full bg-[#06291b] flex items-center justify-center text-white border border-white shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#8ac9be] animate-pulse"></span>
+                    </div>
+                  </div>
+                  <div className="absolute top-[150px] left-[220px]" title="Reported: Water leak">
+                    <div className="w-4 h-4 rounded-full bg-[#06291b] flex items-center justify-center text-white border border-white shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#8ac9be]"></span>
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-3 right-3 bg-[#fcf9f2]/95 border border-[#e5e2da] px-3 py-1.5 rounded-lg flex items-center space-x-2 shadow-xs">
+                    <span className="w-2 h-2 rounded-full bg-[#06291b]"></span>
+                    <span className="text-[11px] font-bold text-[#1c1c18] font-mono">
+                      4 Connected Reports
                     </span>
                   </div>
                 </div>
 
-                {/* Pattern Notice Card */}
-                <div className="bg-surface-container rounded-lg p-space-md border border-surface-container-high space-y-1">
-                  <div className="flex items-center gap-space-xs">
-                    <span className="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-primary">
-                      Emerging Pattern Detected
-                    </span>
-                    <span className="text-outline-variant">•</span>
-                    <span className="font-label-sm text-label-sm text-on-surface-variant">Verified</span>
+                {/* Connected Reports Explanation */}
+                <div className="bg-[#fcf9f2] rounded-xl p-3.5 border border-[#e5e2da] space-y-1 text-xs">
+                  <div className="flex items-center space-x-1.5 text-[11px]">
+                    <span className="font-bold text-[#06291b]">Possible Root Cause</span>
+                    <span className="text-[#787770]">•</span>
+                    <span className="text-[#787770]">Water main seepage</span>
                   </div>
-                  <p className="font-title-md text-title-md text-on-surface font-medium leading-snug">
-                    Sub-surface water line leak inducing multi-point pavement subsidence along Oak Street Corridor.
+                  <p className="text-[#484742] leading-snug">
+                    Multiple nearby reports near Oak Street indicate a water line leak causing surface pavement damage.
                   </p>
-                  <div className="mt-space-sm pt-space-xs border-t border-surface-container-highest flex flex-wrap items-center justify-between gap-space-xs text-body-sm font-body-sm text-on-surface-variant">
-                    <span>4 citizen reports connected</span>
-                    <span className="font-semibold text-primary">Requires Attention</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -141,366 +168,221 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. COMMUNITY METRICS (REAL BACKEND DATA) */}
-      <section className="w-full bg-surface-container-low border-y border-surface-container-highest py-space-xl">
-        <div className="max-w-max-width-content mx-auto px-margin-mobile lg:px-margin-desktop">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
-            {/* Metric 1: Community Reports */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-space-xs">
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
-                  Community Reports
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-label-sm font-label-sm bg-surface-container text-on-surface-variant font-medium">
-                  Active
-                </span>
+      {/* ==================================================
+          2. KEY CIVIC OVERVIEW (METRICS)
+         ================================================== */}
+      <section className="w-full bg-[#f1eee7] border-b border-[#e5e2da] py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {/* Metric 1 */}
+            <div className="bg-[#fcf9f2] rounded-2xl p-6 border border-[#e5e2da] flex flex-col justify-between shadow-sm space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline">
+                Community Reports
+              </span>
+              <div className="my-1 flex items-baseline space-x-2">
+                <span className="text-4xl lg:text-5xl font-extrabold text-[#1c1c18] font-headline">{totalReportsStr}</span>
+                <span className="text-xs font-semibold text-[#787770]">active reports</span>
               </div>
-              <div className="my-space-sm flex items-baseline gap-space-xs">
-                <span className="font-display-lg text-display-lg text-on-surface font-bold">{totalReportsStr}</span>
-                <span className="font-title-md text-title-md text-on-surface-variant">reports logged</span>
-              </div>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Distinct citizen observations logged across neighborhood blocks.
+              <p className="text-xs text-[#484742] leading-relaxed">
+                Distinct observations submitted by residents across neighborhood streets.
               </p>
             </div>
 
-            {/* Metric 2: Emerging Patterns */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-secondary-fixed/30 rounded-bl-full pointer-events-none"></div>
-              <div className="flex items-center justify-between pb-space-xs">
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-primary font-semibold">
-                  Emerging Patterns
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-label-sm font-label-sm bg-secondary-container text-on-secondary-container font-semibold uppercase tracking-wider">
-                  Priority Triage
-                </span>
+            {/* Metric 2 */}
+            <div className="bg-[#fcf9f2] rounded-2xl p-6 border border-[#e5e2da] flex flex-col justify-between shadow-sm space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#06291b] font-headline">
+                Emerging Patterns
+              </span>
+              <div className="my-1 flex items-baseline space-x-2">
+                <span className="text-4xl lg:text-5xl font-extrabold text-[#06291b] font-headline">{activeHotspotsStr}</span>
+                <span className="text-xs font-semibold text-[#787770]">patterns identified</span>
               </div>
-              <div className="my-space-sm flex items-baseline gap-space-xs">
-                <span className="font-display-lg text-display-lg text-primary font-bold">{activeHotspotsStr}</span>
-                <span className="font-title-md text-title-md text-on-surface">pattern active</span>
-              </div>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Areas with recurring connected signals indicative of underlying infrastructure issues.
+              <p className="text-xs text-[#484742] leading-relaxed">
+                Clusters of connected reports indicating potential underlying issues.
               </p>
             </div>
 
-            {/* Metric 3: Issues Requiring Attention */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-space-xs">
-                <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">
-                  Issues Requiring Attention
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-label-sm font-label-sm bg-surface-container text-on-surface-variant font-medium">
-                  Active Review
-                </span>
+            {/* Metric 3 */}
+            <div className="bg-[#fcf9f2] rounded-2xl p-6 border border-[#e5e2da] flex flex-col justify-between shadow-sm space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline">
+                Issues Requiring Attention
+              </span>
+              <div className="my-1 flex items-baseline space-x-2">
+                <span className="text-4xl lg:text-5xl font-extrabold text-[#1c1c18] font-headline">{unverifiedStr}</span>
+                <span className="text-xs font-semibold text-[#787770]">in review queue</span>
               </div>
-              <div className="my-space-sm flex items-baseline gap-space-xs">
-                <span className="font-display-lg text-display-lg text-on-surface font-bold">{unverifiedStr}</span>
-                <span className="font-title-md text-title-md text-on-surface-variant font-medium">queued for review</span>
-              </div>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                Submitted signals queued with municipal authorities for assessment.
+              <p className="text-xs text-[#484742] leading-relaxed">
+                Submitted signals queued for verification and municipal assessment.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. WHY REPORTS ARE CONNECTED */}
-      <section className="w-full py-space-3xl">
-        <div className="max-w-max-width-content mx-auto px-margin-mobile lg:px-margin-desktop">
-          <div className="max-w-2xl mb-space-2xl">
-            <span className="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-secondary">
-              Connected Analysis
-            </span>
-            <h2 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight mt-1">
-              Why reports are connected
+      {/* ==================================================
+          3. HOW INVISIBLE CITY WORKS (HORIZONTAL PROCESS)
+         ================================================== */}
+      <section className="w-full py-16 lg:py-20 border-b border-[#e5e2da] bg-[#fcf9f2]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="max-w-2xl space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
+              How Invisible City connects signals
             </h2>
-            <p className="font-body-md text-body-md text-on-surface-variant mt-space-xs">
-              Instead of treating every complaint in isolation, Invisible City helps link related reports to address root causes before small cracks become major infrastructure failures.
+            <p className="text-xs sm:text-sm text-[#787770]">
+              Turning individual reports into connected neighborhood insights.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-xl">
-            {/* Left: Traditional 311 Reporting */}
-            <div className="bg-surface-container rounded-xl p-space-xl border border-surface-container-highest flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between pb-space-md border-b border-surface-container-highest">
-                  <div className="flex items-center gap-space-xs">
-                    <span className="material-symbols-outlined text-[20px] text-outline">dvr</span>
-                    <h3 className="font-title-md text-title-md font-semibold text-on-surface">Traditional 311 Reporting</h3>
-                  </div>
-                  <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-                    Isolated Records
-                  </span>
-                </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-md">
-                  Each complaint exists inside its own ticket. Inspectors patch the surface repeatedly without noticing that multiple neighbors are reporting connected damage.
-                </p>
-
-                <div className="grid grid-cols-2 gap-space-sm mt-space-lg">
-                  <div className="bg-surface-container-lowest p-space-sm rounded-lg border border-surface-container-highest">
-                    <div className="font-title-md text-body-md font-medium text-on-surface">Surface Pothole</div>
-                    <div className="font-body-sm text-[12px] text-error mt-1 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-error"></span> Closed · Patched
-                    </div>
-                  </div>
-                  <div className="bg-surface-container-lowest p-space-sm rounded-lg border border-surface-container-highest">
-                    <div className="font-title-md text-body-md font-medium text-on-surface">Pavement Crack</div>
-                    <div className="font-body-sm text-[12px] text-error mt-1 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-error"></span> Closed · Sealed
-                    </div>
-                  </div>
-                  <div className="bg-surface-container-lowest p-space-sm rounded-lg border border-surface-container-highest">
-                    <div className="font-title-md text-body-md font-medium text-on-surface">Water Seep at Curb</div>
-                    <div className="font-body-sm text-[12px] text-outline mt-1 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-outline"></span> Pending Review
-                    </div>
-                  </div>
-                  <div className="bg-surface-container-lowest p-space-sm rounded-lg border border-surface-container-highest">
-                    <div className="font-title-md text-body-md font-medium text-on-surface">Curb Sag & Dip</div>
-                    <div className="font-body-sm text-[12px] text-outline mt-1 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-outline"></span> Dispatched Alone
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Invisible City Connected Analysis */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-xl border-2 border-primary/20 shadow-sm flex flex-col justify-between relative">
-              <div className="absolute -top-3 right-space-lg px-space-sm py-0.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-semibold uppercase tracking-wider">
-                Connected Analysis
-              </div>
-              <div>
-                <div className="flex items-center justify-between pb-space-md border-b border-surface-container-high">
-                  <div className="flex items-center gap-space-xs">
-                    <span className="material-symbols-outlined text-[20px] text-primary">hub</span>
-                    <h3 className="font-title-md text-title-md font-semibold text-primary">Invisible City Connected Analysis</h3>
-                  </div>
-                  <span className="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider">
-                    Related Issues
-                  </span>
-                </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-md">
-                  Nearby reports are cross-referenced across location, infrastructure maps, and community timelines to reveal the root phenomenon driving surface symptoms.
-                </p>
-
-                <div className="mt-space-lg bg-surface-container-low rounded-lg p-space-md border border-surface-container-highest">
-                  <div className="flex items-center justify-between">
-                    <span className="font-label-sm text-label-sm uppercase tracking-wider font-semibold text-primary">
-                      Connected Reports
-                    </span>
-                    <span className="font-label-sm text-label-sm text-on-surface-variant">4 Citizen Observations Linked</span>
-                  </div>
-                  <div className="mt-space-sm flex items-center gap-space-sm flex-wrap">
-                    <span className="inline-flex items-center px-2 py-1 rounded bg-surface-container-lowest text-on-surface font-label-sm text-[12px] border border-surface-container-highest">
-                      Pothole
-                    </span>
-                    <span className="text-secondary font-bold">+</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded bg-surface-container-lowest text-on-surface font-label-sm text-[12px] border border-surface-container-highest">
-                      Crack
-                    </span>
-                    <span className="text-secondary font-bold">+</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded bg-surface-container-lowest text-on-surface font-label-sm text-[12px] border border-surface-container-highest">
-                      Water Seep
-                    </span>
-                    <span className="text-secondary font-bold">+</span>
-                    <span className="inline-flex items-center px-2 py-1 rounded bg-surface-container-lowest text-on-surface font-label-sm text-[12px] border border-surface-container-highest">
-                      Curb Sag
-                    </span>
-                  </div>
-                  <div className="mt-space-md p-space-sm rounded bg-surface-container-lowest border-l-4 border-primary">
-                    <div className="font-label-sm text-[11px] uppercase tracking-wider text-primary font-bold">
-                      Possible Underlying Issue
-                    </div>
-                    <div className="font-body-md text-body-md text-on-surface font-semibold mt-0.5">
-                      Sub-surface main fissure washing away foundation underlayment
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-space-lg pt-space-md border-t border-surface-container-high bg-primary-fixed/30 -mx-space-xl -mb-space-xl p-space-md rounded-b-xl">
-                <div className="flex items-start gap-space-xs">
-                  <span className="material-symbols-outlined text-[18px] text-primary shrink-0">check_circle</span>
-                  <p className="font-body-sm text-body-sm text-on-primary-fixed">
-                    <strong className="font-semibold text-primary">Proactive Action:</strong> Dispatches combined water utility and road engineering team simultaneously. Avoids repetitive resurfacing costs.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. HOW INVISIBLE CITY CONNECTS SIGNALS */}
-      <section className="w-full bg-surface-container-low border-y border-surface-container-highest py-space-3xl">
-        <div className="max-w-max-width-content mx-auto px-margin-mobile lg:px-margin-desktop">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-2xl gap-space-md">
-            <div>
-              <span className="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-secondary">
-                How It Works
-              </span>
-              <h2 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight mt-1">
-                How Invisible City connects signals
-              </h2>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-space-md relative">
+          {/* 5-Step Horizontal Flow */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 lg:gap-4 relative items-stretch">
             {/* Step 01 */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between relative group hover:border-outline transition-colors">
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-sm text-headline-sm font-bold text-outline-variant group-hover:text-primary transition-colors">01</span>
-                  <span className="material-symbols-outlined text-[20px] text-secondary">edit_note</span>
+            <div className="bg-[#f1eee7] rounded-2xl p-5 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#d0cdc5] transition-colors relative">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-extrabold text-[#787770] font-mono">01</span>
+                  <FileText className="h-5 w-5 text-[#2f685f]" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface">Report</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Tell us what you noticed with location context.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Report</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Tell us what you noticed in your community.
                 </p>
               </div>
-              <div className="mt-space-md pt-space-xs border-t border-surface-container-high font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
-                Citizen Note
+              <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 bg-[#fcf9f2] rounded-full p-1 border border-[#e5e2da]">
+                <ChevronRight className="h-3.5 w-3.5 text-[#787770]" />
               </div>
             </div>
 
             {/* Step 02 */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between relative group hover:border-outline transition-colors">
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-sm text-headline-sm font-bold text-outline-variant group-hover:text-primary transition-colors">02</span>
-                  <span className="material-symbols-outlined text-[20px] text-secondary">category</span>
+            <div className="bg-[#f1eee7] rounded-2xl p-5 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#d0cdc5] transition-colors relative">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-extrabold text-[#787770] font-mono">02</span>
+                  <Layers className="h-5 w-5 text-[#2f685f]" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface">Understand</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  The report is organized by issue, location, and severity.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Understand</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Reports are categorized by location and issue type.
                 </p>
               </div>
-              <div className="mt-space-md pt-space-xs border-t border-surface-container-high font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
-                Organized Docket
+              <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 bg-[#fcf9f2] rounded-full p-1 border border-[#e5e2da]">
+                <ChevronRight className="h-3.5 w-3.5 text-[#787770]" />
               </div>
             </div>
 
             {/* Step 03 */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between relative group hover:border-outline transition-colors">
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-sm text-headline-sm font-bold text-outline-variant group-hover:text-primary transition-colors">03</span>
-                  <span className="material-symbols-outlined text-[20px] text-secondary">hub</span>
+            <div className="bg-[#f1eee7] rounded-2xl p-5 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#d0cdc5] transition-colors relative">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-extrabold text-[#787770] font-mono">03</span>
+                  <Activity className="h-5 w-5 text-[#2f685f]" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface">Connect</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Related reports are connected based on location, time, and issue.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Connect</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Related reports are linked by area and timing.
                 </p>
               </div>
-              <div className="mt-space-md pt-space-xs border-t border-surface-container-high font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
-                Spatial Connection
+              <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 bg-[#fcf9f2] rounded-full p-1 border border-[#e5e2da]">
+                <ChevronRight className="h-3.5 w-3.5 text-[#787770]" />
               </div>
             </div>
 
             {/* Step 04 */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between relative group hover:border-outline transition-colors">
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-sm text-headline-sm font-bold text-outline-variant group-hover:text-primary transition-colors">04</span>
-                  <span className="material-symbols-outlined text-[20px] text-secondary">insights</span>
+            <div className="bg-[#f1eee7] rounded-2xl p-5 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#d0cdc5] transition-colors relative">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-extrabold text-[#787770] font-mono">04</span>
+                  <Sparkles className="h-5 w-5 text-[#2f685f]" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface">Find Patterns</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Multiple related reports can reveal a broader problem.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Find Patterns</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Clusters reveal recurring root problems.
                 </p>
               </div>
-              <div className="mt-space-md pt-space-xs border-t border-surface-container-high font-label-sm text-[11px] uppercase tracking-wider text-on-surface-variant">
-                Pattern Discovery
+              <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 bg-[#fcf9f2] rounded-full p-1 border border-[#e5e2da]">
+                <ChevronRight className="h-3.5 w-3.5 text-[#787770]" />
               </div>
             </div>
 
-            {/* Step 05 */}
-            <div className="bg-surface-container-lowest rounded-xl p-space-lg border-2 border-primary/40 flex flex-col justify-between relative group">
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <span className="font-headline-sm text-headline-sm font-bold text-primary">05</span>
-                  <span className="material-symbols-outlined text-[20px] text-primary">build</span>
+            {/* Step 05 (Stronger Emphasis) */}
+            <div className="bg-[#f1eee7] rounded-2xl p-5 border-2 border-[#06291b] flex flex-col justify-between space-y-4 shadow-sm">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-extrabold text-[#06291b] font-mono">05</span>
+                  <Wrench className="h-5 w-5 text-[#06291b]" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-primary">Take Action</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Prioritized issues help teams focus attention where it matters.
+                <h3 className="text-base font-bold text-[#06291b] font-headline">Take Action</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Teams address underlying causes effectively.
                 </p>
-              </div>
-              <div className="mt-space-md pt-space-xs border-t border-surface-container-high font-label-sm text-[11px] uppercase tracking-wider text-primary font-semibold">
-                Targeted Resolution
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. MAP / EXPLORE PREVIEW */}
-      <section className="w-full py-space-3xl" id="explore-map">
-        <div className="max-w-max-width-content mx-auto px-margin-mobile lg:px-margin-desktop">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-space-xl gap-space-md">
+      {/* ==================================================
+          4. EXPLORE / MAP SECTION
+         ================================================== */}
+      <section className="w-full py-16 lg:py-20 border-b border-[#e5e2da]" id="explore-map">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
             <div>
-              <span className="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-secondary">
-                Local Observability
-              </span>
-              <h2 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight mt-1">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
                 See what's happening around you
               </h2>
-              <p className="font-body-md text-body-md text-on-surface-variant mt-space-xs max-w-xl">
-                Explore nearby issues and see where problems may be connected.
+              <p className="text-xs sm:text-sm text-[#787770] mt-1">
+                Explore nearby community reports and active pattern clusters.
               </p>
             </div>
 
             {/* Filter Pills */}
-            <div className="flex flex-wrap items-center gap-space-xs" id="map-filter-group">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setActiveFilter('all')}
-                className={`px-space-md py-1.5 rounded-full font-label-md text-label-md transition-colors filter-btn ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                   activeFilter === 'all'
-                    ? 'bg-primary text-on-primary active'
-                    : 'bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high'
+                    ? 'bg-[#06291b] text-white'
+                    : 'bg-[#f1eee7] text-[#484742] hover:bg-[#e5e2da]'
                 }`}
               >
                 All Issues ({totalReports})
               </button>
               <button
                 onClick={() => setActiveFilter('roads')}
-                className={`px-space-md py-1.5 rounded-full font-label-md text-label-md transition-colors filter-btn ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                   activeFilter === 'roads'
-                    ? 'bg-primary text-on-primary active'
-                    : 'bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high'
+                    ? 'bg-[#06291b] text-white'
+                    : 'bg-[#f1eee7] text-[#484742] hover:bg-[#e5e2da]'
                 }`}
               >
                 Potholes & Roads
               </button>
               <button
                 onClick={() => setActiveFilter('water')}
-                className={`px-space-md py-1.5 rounded-full font-label-md text-label-md transition-colors filter-btn ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                   activeFilter === 'water'
-                    ? 'bg-primary text-on-primary active'
-                    : 'bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high'
+                    ? 'bg-[#06291b] text-white'
+                    : 'bg-[#f1eee7] text-[#484742] hover:bg-[#e5e2da]'
                 }`}
               >
-                Water & Drainage
+                Water & Sewage
               </button>
               <button
                 onClick={() => setActiveFilter('lighting')}
-                className={`px-space-md py-1.5 rounded-full font-label-md text-label-md transition-colors filter-btn ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                   activeFilter === 'lighting'
-                    ? 'bg-primary text-on-primary active'
-                    : 'bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high'
+                    ? 'bg-[#06291b] text-white'
+                    : 'bg-[#f1eee7] text-[#484742] hover:bg-[#e5e2da]'
                 }`}
               >
-                Lighting
+                Streetlights & Power
               </button>
               <button
                 onClick={() => setActiveFilter('sanitation')}
-                className={`px-space-md py-1.5 rounded-full font-label-md text-label-md transition-colors filter-btn ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                   activeFilter === 'sanitation'
-                    ? 'bg-primary text-on-primary active'
-                    : 'bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high'
+                    ? 'bg-[#06291b] text-white'
+                    : 'bg-[#f1eee7] text-[#484742] hover:bg-[#e5e2da]'
                 }`}
               >
                 Garbage & Sanitation
@@ -508,9 +390,9 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Map Preview Interface */}
-          <div className="bg-surface-container rounded-xl border border-surface-container-highest p-space-sm relative overflow-hidden">
-            <div className="relative w-full h-[460px] bg-[#ebe6dc] rounded-lg overflow-hidden border border-surface-container-high">
+          {/* Full-Width Map Container */}
+          <div className="bg-[#f1eee7] rounded-2xl border border-[#e5e2da] p-2 relative overflow-hidden shadow-sm">
+            <div className="relative w-full h-[480px] sm:h-[520px] bg-[#ebe6dc] rounded-xl overflow-hidden border border-[#d0cdc5]">
               <div
                 className="absolute inset-0 opacity-25 pointer-events-none"
                 style={{
@@ -518,87 +400,54 @@ export const HomePage: React.FC = () => {
                   backgroundSize: '24px 24px'
                 }}
               />
-              <span className="absolute top-[96px] left-16 font-label-sm text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider bg-surface-container-lowest/80 px-2 py-0.5 rounded">
+              <span className="absolute top-[96px] left-16 text-[11px] font-bold text-[#787770] uppercase bg-[#fcf9f2]/80 px-2 py-0.5 rounded border border-[#e5e2da]">
                 Pine Street
               </span>
-              <span className="absolute top-[216px] left-16 font-label-sm text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider bg-surface-container-lowest/80 px-2 py-0.5 rounded">
-                Oak Street
+              <span className="absolute top-[216px] left-16 text-[11px] font-bold text-[#787770] uppercase bg-[#fcf9f2]/80 px-2 py-0.5 rounded border border-[#e5e2da]">
+                Oak Street Area
               </span>
-              <span className="absolute top-[336px] left-16 font-label-sm text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider bg-surface-container-lowest/80 px-2 py-0.5 rounded">
+              <span className="absolute top-[336px] left-16 text-[11px] font-bold text-[#787770] uppercase bg-[#fcf9f2]/80 px-2 py-0.5 rounded border border-[#e5e2da]">
                 Market Street
               </span>
 
-              {/* Oak Street Cluster Pins */}
-              <div className="absolute top-[215px] left-[295px] group cursor-pointer" title="Report: Pavement fracture">
-                <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm border border-surface-container-lowest">
+              {/* Map Cluster Pins */}
+              <div className="absolute top-[215px] left-[295px] cursor-pointer" title="Report: Pavement fracture">
+                <div className="w-5 h-5 rounded-full bg-[#06291b] flex items-center justify-center text-white shadow-sm border border-white">
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                 </div>
               </div>
-              <div className="absolute top-[230px] left-[355px] group cursor-pointer" title="Report: Depressed curb">
-                <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm border border-surface-container-lowest">
+              <div className="absolute top-[230px] left-[355px] cursor-pointer" title="Report: Depressed curb">
+                <div className="w-5 h-5 rounded-full bg-[#06291b] flex items-center justify-center text-white shadow-sm border border-white">
                   <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
                 </div>
               </div>
-              <div className="absolute top-[220px] left-[415px] group cursor-pointer" title="Report: Surface water ponding">
-                <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm border border-surface-container-lowest">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-                </div>
-              </div>
-              <div className="absolute top-[240px] left-[465px] group cursor-pointer" title="Report: Asphalt cracking">
-                <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm border border-surface-container-lowest">
+              <div className="absolute top-[220px] left-[415px] cursor-pointer" title="Report: Surface water ponding">
+                <div className="w-5 h-5 rounded-full bg-[#06291b] flex items-center justify-center text-white shadow-sm border border-white">
                   <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
                 </div>
               </div>
 
-              {/* Isolated pins */}
-              <div className="absolute top-[110px] left-[710px] group cursor-pointer" title="Report: Streetlight flickering">
-                <div className="w-4 h-4 rounded-full bg-outline flex items-center justify-center text-on-primary shadow-xs border border-surface-container-lowest">
-                  <span className="w-1 h-1 rounded-full bg-white"></span>
-                </div>
-              </div>
-              <div className="absolute top-[350px] left-[780px] group cursor-pointer" title="Report: Storm basin leaf build up">
-                <div className="w-4 h-4 rounded-full bg-outline flex items-center justify-center text-on-primary shadow-xs border border-surface-container-lowest">
-                  <span className="w-1 h-1 rounded-full bg-white"></span>
-                </div>
-              </div>
-
-              {/* Interactive Hotspot Overlay Card */}
-              <div className="absolute bottom-6 right-6 sm:max-w-md w-[calc(100%-3rem)] bg-surface-container-lowest/95 backdrop-blur border border-surface-container-highest rounded-xl p-space-md shadow-md">
-                <div className="flex items-center justify-between gap-space-xs pb-1 border-b border-surface-container-high">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-primary animate-ping"></span>
-                    <span className="font-label-sm text-label-sm font-bold uppercase tracking-wider text-primary">
-                      Possible Hotspot
-                    </span>
-                  </div>
-                  <span className="font-label-sm text-label-sm text-on-surface-variant font-medium">
-                    Oak Street Area · 4 Connected Reports
+              {/* Compact Hotspot Overlay Panel (Bottom Right) */}
+              <div className="absolute bottom-6 right-6 max-w-sm w-[calc(100%-3rem)] bg-[#fcf9f2]/95 backdrop-blur border border-[#e5e2da] rounded-xl p-4 shadow-md space-y-2">
+                <div className="flex items-center justify-between pb-1 border-b border-[#e5e2da]">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb] flex items-center space-x-1">
+                    <Sparkles className="h-3 w-3 text-[#2f685f]" />
+                    <span>Possible Hotspot</span>
                   </span>
+                  <span className="text-[11px] font-semibold text-[#787770]">Oak Street Area</span>
                 </div>
-                <p className="font-body-sm text-body-sm text-on-surface mt-2">
-                  Multiple reports in this area may indicate a recurring issue along Oak St between 3rd & 4th Ave.
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Several related reports in this area may indicate a recurring issue.
                 </p>
-                <div className="mt-space-sm pt-space-xs flex items-center justify-between">
-                  <span className="font-label-sm text-[11px] text-on-surface-variant">First reported recently</span>
+                <div className="pt-2 flex items-center justify-between">
+                  <span className="text-[11px] text-[#787770] font-mono">4 supporting reports</span>
                   <Link
                     to="/map"
-                    className="inline-flex items-center gap-1 font-title-md text-body-sm text-primary font-semibold hover:underline"
+                    className="inline-flex items-center space-x-1 text-xs font-bold text-[#06291b] hover:underline"
                   >
-                    <span>View Connected Reports</span>
-                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    <span>View reports</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
-                </div>
-              </div>
-
-              {/* Map Legend Badge */}
-              <div className="absolute top-4 left-4 bg-surface-container-lowest/90 px-space-sm py-1.5 rounded-lg border border-surface-container-highest shadow-xs flex items-center gap-space-sm">
-                <div className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-primary"></span>
-                  <span className="font-label-sm text-[11px] text-on-surface">Possible Hotspot</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-outline"></span>
-                  <span className="font-label-sm text-[11px] text-on-surface-variant font-medium">Single Report</span>
                 </div>
               </div>
             </div>
@@ -606,101 +455,100 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. CIVIC CATEGORIES */}
-      <section className="w-full bg-surface-container-low border-t border-surface-container-highest py-space-3xl">
-        <div className="max-w-max-width-content mx-auto px-margin-mobile lg:px-margin-desktop">
-          <div className="max-w-2xl mb-space-2xl">
-            <span className="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-secondary">
-              Civic Scope
-            </span>
-            <h2 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight mt-1">
+      {/* ==================================================
+          5. WHAT CAN YOU REPORT (CIVIC CATEGORIES)
+         ================================================== */}
+      <section className="w-full py-16 lg:py-20 border-b border-[#e5e2da] bg-[#f1eee7]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="max-w-2xl space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
               What can you report?
             </h2>
-            <p className="font-body-md text-body-md text-on-surface-variant mt-space-xs">
+            <p className="text-xs sm:text-sm text-[#484742] leading-relaxed">
               Report problems affecting roads, public spaces, utilities, and everyday life in your community.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Category 1 */}
-            <Link
-              to="/report"
-              className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between group hover:border-primary hover:shadow-sm transition-all"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <span className="material-symbols-outlined text-[22px]">signpost</span>
-                  </div>
+            <div className="bg-[#fcf9f2] rounded-2xl p-6 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#06291b] transition-all shadow-sm group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#e1f3ee] flex items-center justify-center text-[#06291b]">
+                  <MapPin className="h-5 w-5" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface group-hover:text-primary transition-colors">
-                  Potholes & Road Surface
-                </h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Damaged asphalt, sunken utility trenches, or surface hazards affecting transit.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Potholes & Roads</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Damaged asphalt, sunken trenches, or surface hazards affecting transit.
                 </p>
               </div>
-            </Link>
+              <Link
+                to="/report"
+                className="inline-flex items-center space-x-1 text-xs font-semibold text-[#06291b] group-hover:underline pt-2"
+              >
+                <span>Report an issue</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
 
             {/* Category 2 */}
-            <Link
-              to="/report"
-              className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between group hover:border-primary hover:shadow-sm transition-all"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <span className="material-symbols-outlined text-[22px]">delete_sweep</span>
-                  </div>
+            <div className="bg-[#fcf9f2] rounded-2xl p-6 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#06291b] transition-all shadow-sm group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#e1f3ee] flex items-center justify-center text-[#06291b]">
+                  <Wrench className="h-5 w-5" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface group-hover:text-primary transition-colors">
-                  Garbage & Sanitation
-                </h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Illegal dumping along public easements, park receptacles, or bulk waste.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Garbage & Sanitation</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Illegal dumping along public easements, uncollected bins, or bulk waste.
                 </p>
               </div>
-            </Link>
+              <Link
+                to="/report"
+                className="inline-flex items-center space-x-1 text-xs font-semibold text-[#06291b] group-hover:underline pt-2"
+              >
+                <span>Report an issue</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
 
             {/* Category 3 */}
-            <Link
-              to="/report"
-              className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between group hover:border-primary hover:shadow-sm transition-all"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <span className="material-symbols-outlined text-[22px]">lightbulb</span>
-                  </div>
+            <div className="bg-[#fcf9f2] rounded-2xl p-6 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#06291b] transition-all shadow-sm group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#e1f3ee] flex items-center justify-center text-[#06291b]">
+                  <Sparkles className="h-5 w-5" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface group-hover:text-primary transition-colors">
-                  Streetlights & Power
-                </h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Blacked-out lamps, exposed wiring, outages, or damaged utility poles.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Streetlights & Power</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Dark streetlamps, exposed wiring, outages, or damaged utility poles.
                 </p>
               </div>
-            </Link>
+              <Link
+                to="/report"
+                className="inline-flex items-center space-x-1 text-xs font-semibold text-[#06291b] group-hover:underline pt-2"
+              >
+                <span>Report an issue</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
 
             {/* Category 4 */}
-            <Link
-              to="/report"
-              className="bg-surface-container-lowest rounded-xl p-space-lg border border-surface-container-highest flex flex-col justify-between group hover:border-primary hover:shadow-sm transition-all"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-space-md">
-                  <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <span className="material-symbols-outlined text-[22px]">water_drop</span>
-                  </div>
+            <div className="bg-[#fcf9f2] rounded-2xl p-6 border border-[#e5e2da] flex flex-col justify-between space-y-4 hover:border-[#06291b] transition-all shadow-sm group">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-[#e1f3ee] flex items-center justify-center text-[#06291b]">
+                  <Activity className="h-5 w-5" />
                 </div>
-                <h3 className="font-title-md text-title-md font-semibold text-on-surface group-hover:text-primary transition-colors">
-                  Water & Sewage
-                </h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">
-                  Sub-surface pipe leaks, curb water ponding, flooding, or open manholes.
+                <h3 className="text-base font-bold text-[#1c1c18] font-headline">Water & Sewage</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Pipe leaks, water ponding on roads, drainage blockages, or open manholes.
                 </p>
               </div>
-            </Link>
+              <Link
+                to="/report"
+                className="inline-flex items-center space-x-1 text-xs font-semibold text-[#06291b] group-hover:underline pt-2"
+              >
+                <span>Report an issue</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
