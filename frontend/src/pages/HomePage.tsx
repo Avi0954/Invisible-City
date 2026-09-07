@@ -57,8 +57,8 @@ export const HomePage: React.FC = () => {
           1. HERO SECTION & CONCEPT STATEMENT (DESKTOP min-h-[70vh])
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] min-h-[70vh] flex flex-col justify-center">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-12 w-full">
-          <div className="max-w-3xl space-y-6">
+        <div className="page-container space-y-12 w-full">
+          <div className="space-y-6">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb] text-xs font-semibold">
               <Sparkles className="h-4 w-4 text-[#2f685f]" />
               <span>Civic Platform & Signal Intelligence</span>
@@ -68,7 +68,7 @@ export const HomePage: React.FC = () => {
               Make your city <span className="text-[#06291b] underline decoration-[#2f685f]/40 underline-offset-8">visible.</span>
             </h1>
 
-            <p className="text-base sm:text-xl text-[#484742] leading-relaxed max-w-2xl font-sans">
+            <p className="text-base sm:text-xl text-[#484742] leading-relaxed max-w-3xl font-sans">
               Report local problems. Let AI analyze them. Track what happens next.
             </p>
 
@@ -91,7 +91,7 @@ export const HomePage: React.FC = () => {
             <div className="text-xs font-bold text-[#787770] uppercase tracking-wider mb-4 font-headline">
               The Complete Civic Flow
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 text-xs font-semibold text-[#1c1c18]">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 text-xs font-semibold text-[#1c1c18] w-full">
               <div className="flex items-center space-x-2.5 bg-[#fcf9f2] p-4 rounded-2xl border border-[#e5e2da]">
                 <span className="text-lg">📍</span>
                 <span>Spot a problem</span>
@@ -121,7 +121,7 @@ export const HomePage: React.FC = () => {
           2. LIVE CITY SNAPSHOT (REAL DATABASE METRICS)
          ================================================== */}
       <section className="w-full bg-[#f1eee7] border-b border-[#e5e2da] py-16 lg:py-20">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-8 w-full">
+        <div className="page-container space-y-8 w-full">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline">
               Live City Snapshot
@@ -130,7 +130,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 w-full">
-            <Card variant="surface" className="p-6 lg:p-8 space-y-3 min-h-[160px] flex flex-col justify-between">
+            <Card variant="surface" className="p-6 lg:p-8 space-y-3 min-h-[160px] flex flex-col justify-between w-full">
               <span className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline">
                 Reports
               </span>
@@ -140,7 +140,7 @@ export const HomePage: React.FC = () => {
               <p className="text-xs text-[#787770]">Total community observations</p>
             </Card>
 
-            <Card variant="surface" className="p-6 lg:p-8 space-y-3 min-h-[160px] flex flex-col justify-between">
+            <Card variant="surface" className="p-6 lg:p-8 space-y-3 min-h-[160px] flex flex-col justify-between w-full">
               <span className="text-xs font-bold uppercase tracking-wider text-amber-900 font-headline">
                 Active Issues
               </span>
@@ -150,7 +150,7 @@ export const HomePage: React.FC = () => {
               <p className="text-xs text-[#787770]">Under review or in progress</p>
             </Card>
 
-            <Card variant="surface" className="p-6 lg:p-8 space-y-3 min-h-[160px] flex flex-col justify-between">
+            <Card variant="surface" className="p-6 lg:p-8 space-y-3 min-h-[160px] flex flex-col justify-between w-full">
               <span className="text-xs font-bold uppercase tracking-wider text-[#06291b] font-headline">
                 Resolved
               </span>
@@ -167,7 +167,7 @@ export const HomePage: React.FC = () => {
           3. CENTRAL FEATURE: HOW IT WORKS (5-STEP PROCESS)
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#fcf9f2]">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-12 w-full">
+        <div className="page-container space-y-12 w-full">
           <div className="space-y-2">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
               How Invisible City Works
@@ -178,7 +178,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 w-full">
-            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between">
+            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between w-full">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-extrabold text-[#06291b]">01</div>
                 <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">SPOT</h3>
@@ -188,7 +188,7 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between">
+            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between w-full">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-extrabold text-[#06291b]">02</div>
                 <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">REPORT</h3>
@@ -198,7 +198,7 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#e1f3ee] border border-[#a2d8cb] space-y-3 flex flex-col justify-between">
+            <div className="p-6 rounded-2xl bg-[#e1f3ee] border border-[#a2d8cb] space-y-3 flex flex-col justify-between w-full">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-extrabold text-[#06291b]">03</div>
                 <h3 className="text-sm font-extrabold text-[#06291b] font-headline uppercase">ANALYZE</h3>
@@ -208,7 +208,7 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between">
+            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between w-full">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-extrabold text-[#06291b]">04</div>
                 <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">VERIFY</h3>
@@ -218,7 +218,7 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#06291b] text-white space-y-3 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+            <div className="p-6 rounded-2xl bg-[#06291b] text-white space-y-3 flex flex-col justify-between sm:col-span-2 lg:col-span-1 w-full">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-extrabold text-[#8ac9be]">05</div>
                 <h3 className="text-sm font-extrabold text-white font-headline uppercase">RESOLVE</h3>
@@ -235,7 +235,7 @@ export const HomePage: React.FC = () => {
           4. AI VALUE DEMONSTRATION BLOCK
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#f1eee7]">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10 w-full">
+        <div className="page-container space-y-10 w-full">
           <div className="space-y-2">
             <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#06291b] uppercase tracking-wider font-headline">
               <Sparkles className="h-4 w-4 text-[#2f685f]" />
@@ -249,9 +249,9 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch w-full">
             {/* Citizen Input Mock */}
-            <div className="lg:col-span-6 p-8 rounded-3xl bg-[#fcf9f2] border border-[#e5e2da] space-y-4 flex flex-col justify-between">
+            <div className="p-8 rounded-3xl bg-[#fcf9f2] border border-[#e5e2da] space-y-4 flex flex-col justify-between w-full">
               <div className="space-y-4">
                 <div className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline flex items-center space-x-1.5">
                   <FileText className="h-4 w-4 text-[#2f685f]" />
@@ -264,7 +264,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* AI Output Card */}
-            <div className="lg:col-span-6 p-8 rounded-3xl bg-[#06291b] text-white space-y-6 shadow-md flex flex-col justify-between">
+            <div className="p-8 rounded-3xl bg-[#06291b] text-white space-y-6 shadow-md flex flex-col justify-between w-full">
               <div className="flex items-center justify-between border-b border-white/15 pb-4">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#8ac9be] font-headline flex items-center space-x-1.5">
                   <Sparkles className="h-4 w-4" />
@@ -302,7 +302,7 @@ export const HomePage: React.FC = () => {
           5. CITY MAP PREVIEW SECTION
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#fcf9f2]">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10 w-full">
+        <div className="page-container space-y-10 w-full">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
@@ -318,7 +318,7 @@ export const HomePage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="h-[420px] lg:h-[480px] w-full rounded-3xl overflow-hidden border border-[#e5e2da] shadow-xs relative">
+          <div className="h-[420px] lg:h-[500px] w-full rounded-3xl overflow-hidden border border-[#e5e2da] shadow-xs relative">
             <MapContainer
               reports={allReports.slice(0, 25)}
               center={[12.9716, 77.5946]}
@@ -333,7 +333,7 @@ export const HomePage: React.FC = () => {
           6. ISSUE CATEGORIES
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#f1eee7]">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10 w-full">
+        <div className="page-container space-y-10 w-full">
           <div className="space-y-1">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
               Supported Categories
@@ -342,27 +342,27 @@ export const HomePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6 w-full text-xs font-bold font-headline text-[#1c1c18]">
-            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors">
+            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors w-full">
               <MapPin className="h-6 w-6 text-[#2f685f]" />
               <span>Roads</span>
             </div>
-            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors">
+            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors w-full">
               <Droplets className="h-6 w-6 text-[#2f685f]" />
               <span>Water</span>
             </div>
-            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors">
+            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors w-full">
               <Zap className="h-6 w-6 text-[#2f685f]" />
               <span>Lighting</span>
             </div>
-            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors">
+            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors w-full">
               <Trash2 className="h-6 w-6 text-[#2f685f]" />
               <span>Waste</span>
             </div>
-            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors">
+            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors w-full">
               <Wrench className="h-6 w-6 text-[#2f685f]" />
               <span>Infrastructure</span>
             </div>
-            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors">
+            <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors w-full">
               <Sparkles className="h-6 w-6 text-[#2f685f]" />
               <span>Other</span>
             </div>
@@ -374,7 +374,7 @@ export const HomePage: React.FC = () => {
           7. FINAL HOME CALL TO ACTION
          ================================================== */}
       <section className="w-full py-20 lg:py-28 bg-[#06291b] text-white">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 text-center space-y-6 w-full">
+        <div className="page-container text-center space-y-6 w-full">
           <h2 className="text-3xl sm:text-5xl font-extrabold font-headline tracking-tight max-w-3xl mx-auto">
             See something that needs attention?
           </h2>

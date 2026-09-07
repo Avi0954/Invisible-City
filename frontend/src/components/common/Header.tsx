@@ -10,7 +10,7 @@ export const Header: React.FC = () => {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-[#fcf9f2]/95 backdrop-blur-md border-b border-[#e5e2da] font-sans text-[#1c1c18]">
-      <div className="h-16 max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between">
+      <div className="h-16 page-container flex items-center justify-between">
         {/* Brand Logo & Wordmark */}
         <div className="flex items-center space-x-3">
           <Link to="/" className="flex items-center space-x-2.5 group focus:outline-none">
