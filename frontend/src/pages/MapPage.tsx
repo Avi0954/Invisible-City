@@ -172,16 +172,16 @@ export const MapPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 font-sans text-[#1c1c18]">
+    <div className="space-y-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 min-h-[calc(100vh-4.5rem)] flex flex-col font-sans text-[#1c1c18]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-2.5 font-headline">
-            <MapPin className="h-6 w-6 text-[#2f685f]" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-2.5 font-headline">
+            <MapPin className="h-7 w-7 text-[#2f685f]" />
             <span>Explore City Issues</span>
           </h1>
-          <p className="text-xs text-[#787770] font-sans">
-            Pan and zoom the map to observe live community reports and signal clusters.
+          <p className="text-xs sm:text-sm text-[#787770] font-sans">
+            Pan and zoom the map to observe live community reports and signal clusters across your area.
           </p>
         </div>
 
@@ -280,7 +280,7 @@ export const MapPage: React.FC = () => {
       </div>
 
       {/* Map Container */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#e5e2da] bg-[#fcf9f2] h-[580px] shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl border border-[#e5e2da] bg-[#fcf9f2] h-[640px] lg:h-[calc(100vh-14rem)] min-h-[500px] flex-1 shadow-xs">
         <MapContainer
           center={defaultCenter}
           zoom={12}

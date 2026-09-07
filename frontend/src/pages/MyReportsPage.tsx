@@ -25,18 +25,18 @@ export const MyReportsPage: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans text-[#1c1c18]">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 min-h-[calc(100vh-4.5rem)] font-sans text-[#1c1c18]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e5e2da] pb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-2.5 font-headline">
-            <FileText className="h-7 w-7 text-[#2f685f]" />
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-3 font-headline">
+            <FileText className="h-8 w-8 text-[#2f685f]" />
             <span>My Reports</span>
           </h1>
-          <p className="text-xs text-[#787770]">Track your submitted community reports and resolution status updates</p>
+          <p className="text-xs sm:text-sm text-[#787770] pt-1">Track your submitted community reports and resolution status updates</p>
         </div>
 
         <Link to="/report">
-          <Button size="sm" leftIcon={<PlusCircle className="h-4 w-4" />}>
+          <Button size="md" leftIcon={<PlusCircle className="h-4 w-4" />}>
             Report an Issue
           </Button>
         </Link>
@@ -44,26 +44,26 @@ export const MyReportsPage: React.FC = () => {
 
       {/* Summary KPI Cards */}
       {data && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <Card variant="surface" className="p-4 space-y-1">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+          <Card variant="surface" className="p-5 sm:p-6 space-y-2 min-h-[130px] flex flex-col justify-between">
             <div className="text-xs text-[#787770] font-bold uppercase tracking-wider font-headline">Total Submissions</div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] font-headline">{data.total}</div>
+            <div className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] font-mono">{data.total}</div>
           </Card>
-          <Card variant="surface" className="p-4 space-y-1">
+          <Card variant="surface" className="p-5 sm:p-6 space-y-2 min-h-[130px] flex flex-col justify-between bg-sky-50/80 border-sky-200">
             <div className="text-xs text-sky-900 font-bold uppercase tracking-wider font-headline">Open</div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-sky-800 font-headline">
+            <div className="text-3xl sm:text-4xl font-extrabold text-sky-900 font-mono">
               {data.items.filter(r => r.status === 'OPEN').length}
             </div>
           </Card>
-          <Card variant="surface" className="p-4 space-y-1">
+          <Card variant="surface" className="p-5 sm:p-6 space-y-2 min-h-[130px] flex flex-col justify-between bg-amber-50/80 border-amber-200">
             <div className="text-xs text-amber-900 font-bold uppercase tracking-wider font-headline">In Progress</div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-amber-800 font-headline">
+            <div className="text-3xl sm:text-4xl font-extrabold text-amber-900 font-mono">
               {data.items.filter(r => r.status === 'IN_PROGRESS').length}
             </div>
           </Card>
-          <Card variant="surface" className="p-4 space-y-1">
+          <Card variant="surface" className="p-5 sm:p-6 space-y-2 min-h-[130px] flex flex-col justify-between bg-[#e1f3ee] border-[#a2d8cb]">
             <div className="text-xs text-[#06291b] font-bold uppercase tracking-wider font-headline">Resolved</div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#06291b] font-headline">
+            <div className="text-3xl sm:text-4xl font-extrabold text-[#06291b] font-mono">
               {data.items.filter(r => r.status === 'RESOLVED').length}
             </div>
           </Card>

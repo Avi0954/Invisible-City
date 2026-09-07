@@ -46,38 +46,38 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16 font-sans text-[#1c1c18]">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 min-h-[calc(100vh-4.5rem)] flex items-center justify-center font-sans text-[#1c1c18]">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-16 items-center w-full">
         {/* Left Column: Product Branding & Narrative */}
-        <div className="md:col-span-6 space-y-6">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#06291b] text-[#8ac9be] shadow-xs">
-            <Building2 className="h-6 w-6" />
+        <div className="md:col-span-6 space-y-6 lg:pr-4">
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#06291b] text-[#8ac9be] shadow-xs">
+            <Building2 className="h-7 w-7" />
           </div>
 
-          <div className="space-y-2">
-            <h1 className="text-3xl font-extrabold text-[#1c1c18] tracking-tight font-headline">
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] tracking-tight font-headline">
               Sign In to Invisible City
             </h1>
             <p className="text-sm text-[#484742] leading-relaxed">
-              Access your reported civic issues, monitor community pattern updates, and follow resolution progress.
+              Access your reported civic issues, monitor community pattern updates, and follow resolution progress across your neighborhood.
             </p>
           </div>
 
           <div className="space-y-3 pt-2 text-xs text-[#787770]">
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="h-4 w-4 text-[#2f685f]" />
-              <span>Track neighborhood submissions in real time</span>
+            <div className="flex items-center space-x-2.5">
+              <CheckCircle2 className="h-4 w-4 text-[#2f685f] flex-shrink-0" />
+              <span>Track neighborhood submissions and verified responses</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <ShieldCheck className="h-4 w-4 text-[#2f685f]" />
-              <span>Privacy-first, community-verified civic platform</span>
+            <div className="flex items-center space-x-2.5">
+              <ShieldCheck className="h-4 w-4 text-[#2f685f] flex-shrink-0" />
+              <span>Privacy-first, community-verified civic intelligence</span>
             </div>
           </div>
         </div>
 
         {/* Right Column: Form Card */}
         <div className="md:col-span-6">
-          <Card variant="container" className="shadow-sm space-y-6">
+          <Card variant="container" className="shadow-xs p-6 sm:p-8 space-y-6">
             {error && (
               <div className="rounded-xl border border-red-300 bg-red-50 p-3.5 flex items-start space-x-2.5 text-xs text-red-800 font-semibold">
                 <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
