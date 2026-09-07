@@ -7,6 +7,9 @@ import { useMapReports } from '../hooks/useMapReports';
 import { useHotspots } from '../hooks/useIntelligence';
 import { MapQueryParams } from '../types/map';
 import { ReportCategory, ReportSeverity, ReportStatus } from '../types/report';
+import { Button } from '../components/ui/Button';
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { Select } from '../components/ui/Input';
 import {
   MapPin,
   Filter,
@@ -24,16 +27,16 @@ const createSeverityIcon = (severity: ReportSeverity) => {
   let pulse = false;
 
   if (severity === 'CRITICAL' || severity === 'HIGH') {
-    colorClass = 'bg-red-700 border-red-200 text-white';
+    colorClass = 'bg-red-700 border-red-100 text-white';
     pulse = true;
   } else if (severity === 'MEDIUM') {
-    colorClass = 'bg-amber-600 border-amber-200 text-white';
+    colorClass = 'bg-amber-600 border-amber-100 text-white';
   }
 
   const html = `
     <div class="relative flex items-center justify-center">
-      ${pulse ? '<span class="absolute inline-flex h-8 w-8 rounded-full bg-red-600 opacity-40 animate-ping"></span>' : ''}
-      <div class="relative inline-flex h-6 w-6 items-center justify-center rounded-full border-2 ${colorClass} shadow-md font-bold text-[10px]">
+      ${pulse ? '<span class="absolute inline-flex h-7 w-7 rounded-full bg-red-600 opacity-40 animate-ping"></span>' : ''}
+      <div class="relative inline-flex h-6 w-6 items-center justify-center rounded-full border-2 ${colorClass} shadow-md font-bold text-[10px] font-mono">
         !
       </div>
     </div>
@@ -169,40 +172,37 @@ export const MapPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 font-sans text-[#1c1c18]">
+    <div className="space-y-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 font-sans text-[#1c1c18]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#1c1c18] tracking-tight flex items-center space-x-2 font-headline">
+          <h1 className="text-2xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-2.5 font-headline">
             <MapPin className="h-6 w-6 text-[#2f685f]" />
-            <span>See what's happening around you</span>
+            <span>Explore City Issues</span>
           </h1>
           <p className="text-xs text-[#787770] font-sans">
-            Explore nearby issues and see where problems may be connected.
+            Pan and zoom the map to observe live community reports and signal clusters.
           </p>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <button
+        <div className="flex items-center space-x-2.5">
+          <Button
+            size="sm"
+            variant={showHotspots ? 'accent' : 'secondary'}
             onClick={() => setShowHotspots(!showHotspots)}
-            className={`flex items-center space-x-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold transition-colors ${
-              showHotspots
-                ? 'border-amber-300 bg-amber-50 text-amber-900'
-                : 'border-[#d0cdc5] bg-[#f1eee7] text-[#484742] hover:bg-[#e5e2da]'
-            }`}
+            leftIcon={<Sparkles className="h-4 w-4" />}
           >
-            <Sparkles className="h-4 w-4 text-amber-600" />
-            <span>Possible Hotspots ({hotspotsData?.count ?? 0})</span>
-          </button>
+            Hotspots ({hotspotsData ? hotspotsData.count : '—'})
+          </Button>
 
-          <button
+          <Button
+            size="sm"
+            variant="outline"
             onClick={handleCurrentLocation}
-            className="flex items-center space-x-1.5 rounded-xl border border-[#d0cdc5] bg-[#f1eee7] hover:bg-[#e5e2da] px-3.5 py-2 text-xs font-semibold text-[#1c1c18] transition-colors"
-            title="Locate Me"
+            leftIcon={<Crosshair className="h-4 w-4 text-[#2f685f]" />}
           >
-            <Crosshair className="h-4 w-4 text-[#2f685f]" />
-            <span>Near Me</span>
-          </button>
+            Locate Me
+          </Button>
         </div>
       </div>
 
@@ -213,69 +213,69 @@ export const MapPage: React.FC = () => {
         </div>
       )}
 
-      {/* Filter Control Bar */}
+      {/* Compact Filter Control Bar */}
       <div className="flex flex-wrap items-center gap-3 p-3.5 rounded-2xl border border-[#e5e2da] bg-[#f1eee7] text-xs">
         <div className="flex items-center space-x-1.5 text-[#484742] pr-2 border-r border-[#d0cdc5] font-semibold">
           <Filter className="h-3.5 w-3.5 text-[#2f685f]" />
-          <span>Category:</span>
+          <span>Filter:</span>
         </div>
 
-        <select
+        <Select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
+          className="w-auto py-1 px-3 text-xs"
         >
-          <option value="">All Issues</option>
+          <option value="">All Categories</option>
           <option value="POTHOLE">Potholes & Roads</option>
-          <option value="WATER_LEAK">Water & Drainage</option>
-          <option value="STREETLIGHT">Lighting</option>
-          <option value="GARBAGE">Garbage & Sanitation</option>
+          <option value="WATER_LEAK">Water & Sewage</option>
+          <option value="STREETLIGHT">Streetlights & Power</option>
+          <option value="GARBAGE">Garbage & Waste</option>
           <option value="DAMAGED_INFRASTRUCTURE">Damaged Infrastructure</option>
           <option value="OTHER">Other Issues</option>
-        </select>
+        </Select>
 
-        <select
+        <Select
           value={severity}
           onChange={(e) => setSeverity(e.target.value)}
-          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
+          className="w-auto py-1 px-3 text-xs"
         >
           <option value="">All Severities</option>
-          <option value="LOW">Low</option>
-          <option value="MEDIUM">Medium</option>
-          <option value="HIGH">High</option>
-          <option value="CRITICAL">Critical</option>
-        </select>
+          <option value="LOW">Low Severity</option>
+          <option value="MEDIUM">Medium Severity</option>
+          <option value="HIGH">High Severity</option>
+          <option value="CRITICAL">Critical Severity</option>
+        </Select>
 
-        <select
+        <Select
           value={reportStatus}
           onChange={(e) => setReportStatus(e.target.value)}
-          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
+          className="w-auto py-1 px-3 text-xs"
         >
           <option value="">All Statuses</option>
           <option value="OPEN">Open</option>
           <option value="VERIFIED">Verified</option>
           <option value="IN_PROGRESS">In Progress</option>
           <option value="RESOLVED">Resolved</option>
-        </select>
+        </Select>
 
-        <select
+        <Select
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
-          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
+          className="w-auto py-1 px-3 text-xs"
         >
           <option value="all">Any Time</option>
           <option value="7d">Last 7 Days</option>
           <option value="30d">Last 30 Days</option>
-        </select>
+        </Select>
 
         <div className="ml-auto text-[#787770] text-xs flex items-center space-x-2 font-mono">
           {isFetching && (
             <div className="flex items-center space-x-1 text-[#06291b] animate-pulse">
-              <RefreshCw className="h-3 w-3 animate-spin" />
+              <RefreshCw className="h-3 w-3 animate-spin text-[#06291b]" />
               <span>Updating area...</span>
             </div>
           )}
-          <span>Visible Reports: {data?.count ?? 0}</span>
+          <span>Visible Reports: {data ? data.count : '—'}</span>
         </div>
       </div>
 
@@ -304,16 +304,16 @@ export const MapPage: React.FC = () => {
               pathOptions={{
                 color: '#d97706',
                 fillColor: '#f59e0b',
-                fillOpacity: 0.2,
+                fillOpacity: 0.18,
                 weight: 2,
-                dashArray: '6, 6',
+                dashArray: '5, 5',
               }}
             >
               <Popup className="custom-leaflet-popup">
-                <div className="p-3 space-y-2 max-w-xs text-[#1c1c18]">
+                <div className="p-3 space-y-2 max-w-xs text-[#1c1c18] font-sans">
                   <div className="flex items-center justify-between">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 flex items-center space-x-1">
-                      <Sparkles className="h-3 w-3 inline mr-1 text-amber-700" />
+                      <Sparkles className="h-3 w-3 inline text-amber-700" />
                       <span>Possible Hotspot</span>
                     </span>
                     <span className="text-[11px] font-bold text-amber-800 font-mono">
@@ -321,11 +321,11 @@ export const MapPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <h4 className="font-bold text-sm leading-tight text-[#1c1c18]">{hotspot.title}</h4>
+                  <h4 className="font-bold text-sm leading-tight text-[#1c1c18] font-headline">{hotspot.title}</h4>
 
                   <div className="grid grid-cols-2 gap-1.5 text-[11px] bg-[#f1eee7] p-2 rounded-lg border border-[#e5e2da]">
                     <div>
-                      <span className="text-[#787770] block text-[10px]">Reports:</span>
+                      <span className="text-[#787770] block text-[10px]">Linked Reports:</span>
                       <span className="font-bold text-[#1c1c18]">{hotspot.report_count} reports</span>
                     </div>
                     <div>
@@ -335,10 +335,10 @@ export const MapPage: React.FC = () => {
                   </div>
 
                   <p className="text-xs text-[#484742] leading-relaxed font-medium bg-amber-50/80 p-2 rounded-lg border border-amber-200">
-                    Multiple reports in this area may indicate a recurring issue.
+                    Multiple nearby reports indicate connected root causes in this area.
                   </p>
 
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1 pt-1">
                     {hotspot.categories.map((c, idx) => (
                       <span key={idx} className="px-2 py-0.5 rounded text-[9px] bg-[#e5e2da] text-[#1c1c18] font-medium">
                         {c.replace('_', ' ')}
@@ -358,20 +358,16 @@ export const MapPage: React.FC = () => {
               icon={createSeverityIcon(report.severity)}
             >
               <Popup className="custom-leaflet-popup">
-                <div className="p-2 space-y-2 max-w-xs text-[#1c1c18]">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1c1c18] text-white uppercase">
+                <div className="p-3 space-y-2 max-w-xs text-[#1c1c18] font-sans">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1c1c18] text-white uppercase font-headline">
                       {report.category.replace('_', ' ')}
                     </span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-white ${
-                      report.severity === 'CRITICAL' || report.severity === 'HIGH' ? 'bg-red-700' : 'bg-amber-600'
-                    }`}>
-                      {report.severity}
-                    </span>
+                    <StatusBadge status={report.status} size="sm" />
                   </div>
 
-                  <h4 className="font-bold text-sm leading-tight text-[#1c1c18]">{report.title}</h4>
-                  <p className="text-xs text-[#484742] line-clamp-2">{report.description}</p>
+                  <h4 className="font-bold text-sm leading-tight text-[#1c1c18] font-headline">{report.title}</h4>
+                  <p className="text-xs text-[#484742] line-clamp-2 leading-relaxed">{report.description}</p>
 
                   {report.thumbnail_url && (
                     <img
@@ -381,7 +377,7 @@ export const MapPage: React.FC = () => {
                     />
                   )}
 
-                  <div className="flex items-center justify-between text-[11px] text-[#787770] pt-1 border-t border-[#e5e2da]">
+                  <div className="flex items-center justify-between text-[11px] text-[#787770] pt-2 border-t border-[#e5e2da]">
                     <span>{new Date(report.created_at).toLocaleDateString()}</span>
                     <Link
                       to={`/reports/${report.id}`}
@@ -399,28 +395,27 @@ export const MapPage: React.FC = () => {
 
         {/* Empty State Overlay */}
         {data && data.reports.length === 0 && !isFetching && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-[#e5e2da] bg-[#fcf9f2]/95 backdrop-blur-md px-4 py-2 text-xs text-[#484742] shadow-lg flex items-center space-x-2 font-medium">
-            <Info className="h-4 w-4 text-[#2f685f]" />
-            <span>No reports found in this map area. Zoom out or move the map to explore.</span>
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-[#e5e2da] bg-[#fcf9f2]/95 backdrop-blur-md px-4 py-2.5 text-xs text-[#484742] shadow-lg flex items-center space-x-2 font-medium">
+            <Info className="h-4 w-4 text-[#2f685f] flex-shrink-0" />
+            <span>No reports found in this map area. Zoom out or pan the map to explore.</span>
           </div>
         )}
 
         {/* Truncated Results Warning */}
         {data && data.truncated && (
           <div className="absolute top-4 right-4 z-20 rounded-xl border border-amber-300 bg-amber-50/95 backdrop-blur-md px-3.5 py-2 text-xs text-amber-900 shadow-md flex items-center space-x-2 font-medium">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0" />
             <span>Showing top {data.limit} reports. Zoom in to see more detail.</span>
           </div>
         )}
 
         {/* API Error Overlay */}
         {isError && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-red-300 bg-red-50/95 backdrop-blur-md px-4 py-2 text-xs text-red-800 shadow-md">
-            Unable to load map reports. Please try again.
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 rounded-xl border border-red-300 bg-red-50/95 backdrop-blur-md px-4 py-2 text-xs text-red-800 shadow-md font-semibold">
+            Unable to load map reports. Please check connection and try again.
           </div>
         )}
       </div>
     </div>
   );
 };
-

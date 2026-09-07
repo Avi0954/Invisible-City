@@ -8,6 +8,11 @@ import {
   useAdminAuditLogs,
   useAdminFlags,
 } from '../hooks/useAdmin';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
+import { Select } from '../components/ui/Input';
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { EmptyState } from '../components/ui/EmptyState';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -21,6 +26,8 @@ import {
   X,
   AlertCircle
 } from 'lucide-react';
+
+import { useToast } from '../context/ToastContext';
 
 export const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'triage' | 'audit' | 'flags'>('triage');
@@ -41,13 +48,24 @@ export const AdminPage: React.FC = () => {
 
   const verifyMutation = useVerifyReport();
   const statusMutation = useUpdateReportStatus();
+  const toast = useToast();
 
   const handleVerifyChange = async (reportId: string, newVerificationStatus: string) => {
-    await verifyMutation.mutateAsync({ reportId, verification_status: newVerificationStatus });
+    try {
+      await verifyMutation.mutateAsync({ reportId, verification_status: newVerificationStatus });
+      toast.success(`Verification status updated to ${newVerificationStatus}.`);
+    } catch (err: any) {
+      toast.error(err.message || 'Unable to update verification status.');
+    }
   };
 
   const handleStatusChange = async (reportId: string, newStatus: string) => {
-    await statusMutation.mutateAsync({ reportId, status: newStatus });
+    try {
+      await statusMutation.mutateAsync({ reportId, status: newStatus });
+      toast.success(`Report status updated to ${newStatus.replace('_', ' ')}.`);
+    } catch (err: any) {
+      toast.error(err.message || 'Unable to update report status.');
+    }
   };
 
   const getPriorityBadgeClass = (level: string) => {
@@ -64,116 +82,108 @@ export const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto font-sans text-[#1c1c18]">
+    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans text-[#1c1c18]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#1c1c18] tracking-tight flex items-center space-x-2 font-headline">
-            <ShieldCheck className="h-6 w-6 text-[#2f685f]" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-2.5 font-headline">
+            <ShieldCheck className="h-7 w-7 text-[#2f685f]" />
             <span>Issues Requiring Attention</span>
           </h1>
           <p className="text-xs text-[#787770]">
-            Review, verify, and prioritize community reports requiring city attention.
+            Municipal Review Workspace: Verify, prioritize, and manage community signal triage.
           </p>
         </div>
 
-        <button
+        <Button
+          size="sm"
+          variant="secondary"
           onClick={() => refetch()}
-          className="flex items-center space-x-1.5 rounded-xl border border-[#d0cdc5] bg-[#f1eee7] hover:bg-[#e5e2da] px-3.5 py-2 text-xs font-semibold text-[#1c1c18] transition-colors self-start sm:self-auto"
+          leftIcon={<RefreshCw className="h-4 w-4 text-[#2f685f]" />}
         >
-          <RefreshCw className="h-4 w-4 text-[#2f685f]" />
-          <span>Refresh Data</span>
-        </button>
+          Refresh Data
+        </Button>
       </div>
 
       {/* KPI Overview Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-4 space-y-1">
-          <div className="text-[11px] text-[#787770] font-semibold uppercase tracking-wider font-headline">Total Reports</div>
+        <Card variant="container" className="p-4 space-y-1">
+          <div className="text-[11px] text-[#787770] font-bold uppercase tracking-wider font-headline">Total Reports</div>
           <div className="text-2xl font-extrabold text-[#1c1c18] font-mono">
             {overviewLoading ? '...' : overview?.total_reports ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-sky-200 bg-sky-50/80 p-4 space-y-1">
-          <div className="text-[11px] text-sky-900 font-semibold uppercase tracking-wider font-headline">Open Reports</div>
+        <Card variant="container" className="p-4 space-y-1 bg-sky-50/80 border-sky-200">
+          <div className="text-[11px] text-sky-900 font-bold uppercase tracking-wider font-headline">Open Reports</div>
           <div className="text-2xl font-extrabold text-sky-900 font-mono">
             {overviewLoading ? '...' : overview?.open_reports ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-[#a2d8cb] bg-[#e1f3ee] p-4 space-y-1">
-          <div className="text-[11px] text-[#06291b] font-semibold uppercase tracking-wider font-headline">Verified</div>
+        <Card variant="container" className="p-4 space-y-1 bg-[#e1f3ee] border-[#a2d8cb]">
+          <div className="text-[11px] text-[#06291b] font-bold uppercase tracking-wider font-headline">Verified</div>
           <div className="text-2xl font-extrabold text-[#06291b] font-mono">
             {overviewLoading ? '...' : overview?.verified_reports ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-[#a2d8cb] bg-[#e1f3ee] p-4 space-y-1">
-          <div className="text-[11px] text-[#06291b] font-semibold uppercase tracking-wider font-headline">Resolved</div>
+        <Card variant="container" className="p-4 space-y-1 bg-[#e1f3ee] border-[#a2d8cb]">
+          <div className="text-[11px] text-[#06291b] font-bold uppercase tracking-wider font-headline">Resolved</div>
           <div className="text-2xl font-extrabold text-[#06291b] font-mono">
             {overviewLoading ? '...' : overview?.resolved_reports ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-4 space-y-1">
-          <div className="text-[11px] text-amber-900 font-semibold uppercase tracking-wider font-headline flex items-center space-x-1">
+        <Card variant="container" className="p-4 space-y-1 bg-amber-50/80 border-amber-200">
+          <div className="text-[11px] text-amber-900 font-bold uppercase tracking-wider font-headline flex items-center space-x-1">
             <Sparkles className="h-3 w-3 text-amber-700" />
             <span>Hotspots</span>
           </div>
           <div className="text-2xl font-extrabold text-amber-900 font-mono">
             {overviewLoading ? '...' : overview?.hotspot_count ?? 0}
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-red-200 bg-red-50/80 p-4 space-y-1">
-          <div className="text-[11px] text-red-900 font-semibold uppercase tracking-wider font-headline flex items-center space-x-1">
+        <Card variant="container" className="p-4 space-y-1 bg-red-50/80 border-red-200">
+          <div className="text-[11px] text-red-900 font-bold uppercase tracking-wider font-headline flex items-center space-x-1">
             <AlertCircle className="h-3 w-3 text-red-700" />
             <span>High Priority</span>
           </div>
           <div className="text-2xl font-extrabold text-red-900 font-mono">
             {overviewLoading ? '...' : overview?.high_priority_count ?? 0}
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Tabs Navigation */}
       <div className="flex items-center space-x-2 border-b border-[#e5e2da] pb-3">
-        <button
+        <Button
+          size="sm"
+          variant={activeTab === 'triage' ? 'primary' : 'secondary'}
           onClick={() => setActiveTab('triage')}
-          className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-colors ${
-            activeTab === 'triage'
-              ? 'bg-[#06291b] text-white'
-              : 'text-[#484742] hover:bg-[#e5e2da] bg-[#f1eee7]'
-          }`}
+          leftIcon={<AlertCircle className="h-4 w-4" />}
         >
-          <AlertCircle className="h-4 w-4" />
-          <span>Priority Queue</span>
-        </button>
+          Priority Queue
+        </Button>
 
-        <button
+        <Button
+          size="sm"
+          variant={activeTab === 'audit' ? 'primary' : 'secondary'}
           onClick={() => setActiveTab('audit')}
-          className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-colors ${
-            activeTab === 'audit'
-              ? 'bg-[#06291b] text-white'
-              : 'text-[#484742] hover:bg-[#e5e2da] bg-[#f1eee7]'
-          }`}
+          leftIcon={<History className="h-4 w-4" />}
         >
-          <History className="h-4 w-4" />
-          <span>Audit Records ({auditLogs?.length ?? 0})</span>
-        </button>
+          Audit Records ({auditLogs?.length ?? 0})
+        </Button>
 
-        <button
+        <Button
+          size="sm"
+          variant={activeTab === 'flags' ? 'primary' : 'secondary'}
           onClick={() => setActiveTab('flags')}
-          className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-colors ${
-            activeTab === 'flags'
-              ? 'bg-[#06291b] text-white'
-              : 'text-[#484742] hover:bg-[#e5e2da] bg-[#f1eee7]'
-          }`}
+          leftIcon={<Flag className="h-4 w-4" />}
         >
-          <Flag className="h-4 w-4" />
-          <span>Moderation Flags ({flags?.length ?? 0})</span>
-        </button>
+          Moderation Flags ({flags?.length ?? 0})
+        </Button>
       </div>
 
       {/* TRIAGE QUEUE TAB */}
@@ -186,10 +196,10 @@ export const AdminPage: React.FC = () => {
               <span>Queue Filters:</span>
             </div>
 
-            <select
+            <Select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none"
+              className="w-auto py-1 px-3 text-xs"
             >
               <option value="">All Statuses</option>
               <option value="OPEN">Open</option>
@@ -197,31 +207,31 @@ export const AdminPage: React.FC = () => {
               <option value="IN_PROGRESS">In Progress</option>
               <option value="RESOLVED">Resolved</option>
               <option value="REJECTED">Rejected</option>
-            </select>
+            </Select>
 
-            <select
+            <Select
               value={verificationFilter}
               onChange={(e) => setVerificationFilter(e.target.value)}
-              className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none"
+              className="w-auto py-1 px-3 text-xs"
             >
               <option value="">All Verifications</option>
               <option value="UNVERIFIED">Unverified</option>
               <option value="UNDER_REVIEW">Under Review</option>
               <option value="ADMIN_VERIFIED">Verified</option>
               <option value="REJECTED">Rejected</option>
-            </select>
+            </Select>
 
-            <select
+            <Select
               value={severityFilter}
               onChange={(e) => setSeverityFilter(e.target.value)}
-              className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none"
+              className="w-auto py-1 px-3 text-xs"
             >
               <option value="">All Severities</option>
               <option value="CRITICAL">Critical</option>
               <option value="HIGH">High</option>
               <option value="MEDIUM">Medium</option>
               <option value="LOW">Low</option>
-            </select>
+            </Select>
           </div>
 
           {/* Priority Reasons Modal */}
@@ -250,32 +260,30 @@ export const AdminPage: React.FC = () => {
                   ))}
                 </ul>
 
-                <button
-                  onClick={() => setSelectedReasons(null)}
-                  className="w-full py-2 rounded-xl bg-[#06291b] hover:bg-[#0a3826] text-xs font-semibold text-white transition-colors"
-                >
+                <Button size="sm" className="w-full" onClick={() => setSelectedReasons(null)}>
                   Close
-                </button>
+                </Button>
               </div>
             </div>
           )}
 
           {/* Triage Table */}
-          <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] overflow-hidden shadow-sm">
+          <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] overflow-hidden shadow-xs">
             {reportsLoading ? (
               <div className="p-12 text-center text-[#787770] space-y-2">
                 <div className="h-5 w-5 rounded-full border-2 border-[#06291b] border-t-transparent animate-spin mx-auto" />
-                <p className="text-xs">Loading queue...</p>
+                <p className="text-xs">Loading review queue...</p>
               </div>
             ) : reportsData && reportsData.items.length === 0 ? (
-              <div className="p-12 text-center text-[#787770] text-xs space-y-1">
-                <Info className="h-6 w-6 text-[#787770] mx-auto" />
-                <p>No reports currently matching filter criteria.</p>
-              </div>
+              <EmptyState
+                icon={Info}
+                title="No reports matching filter criteria"
+                description="No community submissions currently match your selected triage filters."
+              />
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs text-[#1c1c18]">
-                  <thead className="bg-[#e5e2da] text-[#484742] font-semibold uppercase text-[10px] tracking-wider border-b border-[#d0cdc5]">
+                  <thead className="bg-[#e5e2da] text-[#484742] font-semibold uppercase text-[10px] tracking-wider border-b border-[#d0cdc5] font-headline">
                     <tr>
                       <th className="py-3.5 px-4">Priority</th>
                       <th className="py-3.5 px-4">Issue Details</th>
@@ -293,7 +301,7 @@ export const AdminPage: React.FC = () => {
                           <button
                             onClick={() => setSelectedReasons({ id: report.id, reasons: report.priority_reasons })}
                             className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg border font-mono font-bold text-xs ${getPriorityBadgeClass(report.priority_level)}`}
-                            title="Click to view priority details"
+                            title="Click to view priority breakdown"
                           >
                             <span>{report.priority_score}</span>
                             <span className="text-[10px]">({report.priority_level})</span>
@@ -314,10 +322,10 @@ export const AdminPage: React.FC = () => {
 
                         {/* Category / Severity */}
                         <td className="py-3.5 px-4 space-y-1">
-                          <span className="inline-block px-2 py-0.5 rounded bg-[#fcf9f2] text-[#484742] border border-[#e5e2da] text-[10px] font-semibold uppercase">
+                          <span className="inline-block px-2 py-0.5 rounded bg-[#fcf9f2] text-[#484742] border border-[#e5e2da] text-[10px] font-bold uppercase font-headline">
                             {report.category.replace('_', ' ')}
                           </span>
-                          <div className="text-[11px] font-semibold text-amber-800">{report.severity}</div>
+                          <StatusBadge severity={report.severity} size="sm" />
                         </td>
 
                         {/* Verification Status Dropdown */}
@@ -361,7 +369,7 @@ export const AdminPage: React.FC = () => {
                         <td className="py-3.5 px-4 text-right">
                           <Link
                             to={`/reports/${report.id}`}
-                            className="inline-flex items-center space-x-1 text-[#06291b] hover:underline text-xs font-semibold"
+                            className="inline-flex items-center space-x-1 text-[#06291b] hover:underline text-xs font-bold"
                           >
                             <span>View</span>
                             <ExternalLink className="h-3 w-3" />
@@ -379,16 +387,20 @@ export const AdminPage: React.FC = () => {
 
       {/* AUDIT LOGS TAB */}
       {activeTab === 'audit' && (
-        <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-6 space-y-4 shadow-sm">
+        <Card variant="container" className="space-y-4">
           <h3 className="font-bold text-[#1c1c18] text-sm flex items-center space-x-2 font-headline">
             <History className="h-4 w-4 text-[#2f685f]" />
-            <span>Audit Log Records</span>
+            <span>Audit Activity Log</span>
           </h3>
 
           {auditLoading ? (
-            <div className="p-6 text-center text-[#787770] text-xs">Loading audit logs...</div>
+            <div className="p-6 text-center text-[#787770] text-xs">Loading audit records...</div>
           ) : auditLogs && auditLogs.length === 0 ? (
-            <div className="p-6 text-center text-[#787770] text-xs">No administrative actions recorded yet.</div>
+            <EmptyState
+              icon={History}
+              title="No activity recorded yet"
+              description="No administrative actions have been logged in the platform audit history."
+            />
           ) : (
             <div className="space-y-2">
               {auditLogs?.map((log) => (
@@ -396,7 +408,7 @@ export const AdminPage: React.FC = () => {
                   <div className="space-y-0.5">
                     <span className="font-bold text-[#06291b] font-mono">{log.action}</span>
                     <div className="text-[11px] text-[#787770]">
-                      Entity: {log.entity_type} ({log.entity_id || 'N/A'})
+                      Entity: {log.entity_type}
                     </div>
                   </div>
                   <div className="text-[10px] text-[#787770] font-mono">
@@ -406,12 +418,12 @@ export const AdminPage: React.FC = () => {
               ))}
             </div>
           )}
-        </div>
+        </Card>
       )}
 
       {/* MODERATION FLAGS TAB */}
       {activeTab === 'flags' && (
-        <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-6 space-y-4 shadow-sm">
+        <Card variant="container" className="space-y-4">
           <h3 className="font-bold text-[#1c1c18] text-sm flex items-center space-x-2 font-headline">
             <Flag className="h-4 w-4 text-amber-700" />
             <span>Moderation Flags</span>
@@ -420,7 +432,11 @@ export const AdminPage: React.FC = () => {
           {flagsLoading ? (
             <div className="p-6 text-center text-[#787770] text-xs">Loading moderation flags...</div>
           ) : flags && flags.length === 0 ? (
-            <div className="p-6 text-center text-[#787770] text-xs">No moderation flags reported.</div>
+            <EmptyState
+              icon={Flag}
+              title="No moderation flags recorded"
+              description="No community reports have been flagged for moderation review."
+            />
           ) : (
             <div className="space-y-2">
               {flags?.map((flag) => (
@@ -431,18 +447,17 @@ export const AdminPage: React.FC = () => {
                   </div>
                   <Link
                     to={`/reports/${flag.report_id}`}
-                    className="inline-flex items-center space-x-1 text-[#06291b] hover:underline font-semibold"
+                    className="inline-flex items-center space-x-1 text-[#06291b] hover:underline font-bold"
                   >
-                    <span>View Report</span>
+                    <span>View Case</span>
                     <ExternalLink className="h-3 w-3" />
                   </Link>
                 </div>
               ))}
             </div>
           )}
-        </div>
+        </Card>
       )}
     </div>
   );
 };
-

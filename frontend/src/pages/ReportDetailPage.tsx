@@ -5,21 +5,21 @@ import { useReportAnalysis, useAnalyzeReport } from '../hooks/useAIAnalysis';
 import { useRelatedReports, useDuplicateReports } from '../hooks/useIntelligence';
 import { useFlagReport } from '../hooks/useAdmin';
 import { useAuth } from '../context/AuthContext';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { ReportTimeline } from '../components/ui/ReportTimeline';
+import { Select, Textarea } from '../components/ui/Input';
 import {
-  FileText,
   MapPin,
   Clock,
   User,
-  ShieldCheck,
   Trash2,
   Upload,
   ArrowLeft,
   AlertCircle,
-  Camera,
-  CheckCircle2,
   X,
   Sparkles,
-  AlertTriangle,
   Tag,
   RefreshCw,
   Copy,
@@ -28,10 +28,13 @@ import {
   Flag
 } from 'lucide-react';
 
+import { useToast } from '../context/ToastContext';
+
 export const ReportDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
+  const toast = useToast();
 
   const { data: report, isLoading, isError } = useReport(id!);
   const { data: aiAnalysis } = useReportAnalysis(id!);
@@ -53,22 +56,22 @@ export const ReportDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="p-12 text-center text-[#787770] space-y-3">
+      <div className="p-16 text-center text-[#787770] space-y-3 font-sans">
         <div className="h-6 w-6 rounded-full border-2 border-[#06291b] border-t-transparent animate-spin mx-auto" />
-        <p className="text-xs font-sans">Loading report details...</p>
+        <p className="text-xs">Loading report case details...</p>
       </div>
     );
   }
 
   if (isError || !report) {
     return (
-      <div className="space-y-4 max-w-lg mx-auto text-center py-12">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-800 space-y-2">
+      <div className="space-y-4 max-w-lg mx-auto text-center py-16 font-sans">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-red-800 space-y-2">
           <AlertCircle className="h-8 w-8 text-red-600 mx-auto" />
-          <h3 className="font-bold text-base font-headline">Report Not Found</h3>
-          <p className="text-xs font-sans">The requested civic report does not exist or has been removed.</p>
+          <h3 className="font-bold text-base font-headline">Report Case Not Found</h3>
+          <p className="text-xs">The requested civic report does not exist or has been removed.</p>
         </div>
-        <Link to="/my-reports" className="text-xs text-[#06291b] font-semibold hover:underline">
+        <Link to="/my-reports" className="text-xs text-[#06291b] font-bold hover:underline">
           Return to My Reports
         </Link>
       </div>
@@ -80,8 +83,13 @@ export const ReportDetailPage: React.FC = () => {
 
   const handleDeleteReport = async () => {
     if (window.confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
-      await deleteReportMutation.mutateAsync(report.id);
-      navigate('/my-reports');
+      try {
+        await deleteReportMutation.mutateAsync(report.id);
+        toast.success('Report deleted successfully.');
+        navigate('/my-reports');
+      } catch (err: any) {
+        toast.error(err.message || 'Unable to delete report.');
+      }
     }
   };
 
@@ -92,14 +100,18 @@ export const ReportDetailPage: React.FC = () => {
 
     if (file.size > 10 * 1024 * 1024) {
       setUploadError('File size exceeds 10MB.');
+      toast.error('File size exceeds 10MB.');
       return;
     }
 
     setUploading(true);
     try {
       await uploadMediaMutation.mutateAsync({ reportId: report.id, file });
+      toast.success('Photo attachment uploaded successfully.');
     } catch (err: any) {
-      setUploadError(err.message || 'Failed to upload media attachment.');
+      const msg = err.message || 'Failed to upload media attachment.';
+      setUploadError(msg);
+      toast.error(msg);
     } finally {
       setUploading(false);
     }
@@ -107,7 +119,12 @@ export const ReportDetailPage: React.FC = () => {
 
   const handleDeleteMedia = async (mediaId: string) => {
     if (window.confirm('Remove this photo attachment?')) {
-      await deleteMediaMutation.mutateAsync({ mediaId, reportId: report.id });
+      try {
+        await deleteMediaMutation.mutateAsync({ mediaId, reportId: report.id });
+        toast.success('Photo attachment removed.');
+      } catch (err: any) {
+        toast.error(err.message || 'Unable to remove photo attachment.');
+      }
     }
   };
 
@@ -116,44 +133,48 @@ export const ReportDetailPage: React.FC = () => {
     try {
       await flagMutation.mutateAsync({ reportId: report.id, reason: flagReason, details: flagDetails });
       setFlagSuccess(true);
+      toast.success('Flag submitted for community moderation.');
       setTimeout(() => {
         setFlagModalOpen(false);
         setFlagSuccess(false);
       }, 1500);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      toast.error(err.message || 'Unable to submit moderation flag.');
     }
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto font-sans text-[#1c1c18]">
-      {/* Back Header */}
+    <div className="space-y-6 max-w-4xl mx-auto px-4 py-8 font-sans text-[#1c1c18]">
+      {/* Back Navigation & Case Actions */}
       <div className="flex items-center justify-between">
-        <button
+        <Button
+          size="sm"
+          variant="ghost"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center space-x-1 text-xs font-semibold text-[#484742] hover:text-[#06291b] transition-colors"
+          leftIcon={<ArrowLeft className="h-4 w-4" />}
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back</span>
-        </button>
+          Back
+        </Button>
 
         <div className="flex items-center space-x-2">
-          <button
+          <Button
+            size="sm"
+            variant="outline"
             onClick={() => setFlagModalOpen(true)}
-            className="inline-flex items-center space-x-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-900 transition-colors"
+            leftIcon={<Flag className="h-3.5 w-3.5 text-amber-700" />}
           >
-            <Flag className="h-3.5 w-3.5" />
-            <span>Flag Issue</span>
-          </button>
+            Flag Issue
+          </Button>
 
           {canModify && (
-            <button
+            <Button
+              size="sm"
+              variant="destructive"
               onClick={handleDeleteReport}
-              className="inline-flex items-center space-x-1.5 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-800 transition-colors"
+              leftIcon={<Trash2 className="h-3.5 w-3.5" />}
             >
-              <Trash2 className="h-3.5 w-3.5" />
-              <span>Delete Report</span>
-            </button>
+              Delete Report
+            </Button>
           )}
         </div>
       </div>
@@ -178,46 +199,33 @@ export const ReportDetailPage: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleFlagSubmit} className="space-y-4 text-xs">
-                <div className="space-y-1.5">
-                  <label className="text-[#484742] font-semibold">Flag Reason</label>
-                  <select
-                    value={flagReason}
-                    onChange={(e) => setFlagReason(e.target.value)}
-                    className="w-full rounded-xl border border-[#d0cdc5] bg-[#f1eee7] p-2.5 text-[#1c1c18] focus:outline-none focus:ring-1 focus:ring-[#06291b]"
-                  >
-                    <option value="FALSE_REPORT">False or Spam Report</option>
-                    <option value="DUPLICATE">Duplicate of Existing Report</option>
-                    <option value="INCORRECT_LOCATION">Incorrect GPS Location</option>
-                    <option value="INAPPROPRIATE_CONTENT">Inappropriate Content</option>
-                    <option value="ALREADY_RESOLVED">Already Resolved Issue</option>
-                  </select>
-                </div>
+                <Select
+                  label="Flag Reason"
+                  value={flagReason}
+                  onChange={(e) => setFlagReason(e.target.value)}
+                >
+                  <option value="FALSE_REPORT">False or Spam Report</option>
+                  <option value="DUPLICATE">Duplicate of Existing Report</option>
+                  <option value="INCORRECT_LOCATION">Incorrect GPS Location</option>
+                  <option value="INAPPROPRIATE_CONTENT">Inappropriate Content</option>
+                  <option value="ALREADY_RESOLVED">Already Resolved Issue</option>
+                </Select>
 
-                <div className="space-y-1.5">
-                  <label className="text-[#484742] font-semibold">Additional Details (Optional)</label>
-                  <textarea
-                    value={flagDetails}
-                    onChange={(e) => setFlagDetails(e.target.value)}
-                    placeholder="Provide additional context..."
-                    className="w-full rounded-xl border border-[#d0cdc5] bg-[#f1eee7] p-2.5 text-[#1c1c18] focus:outline-none h-20"
-                  />
-                </div>
+                <Textarea
+                  label="Additional Details (Optional)"
+                  value={flagDetails}
+                  onChange={(e) => setFlagDetails(e.target.value)}
+                  placeholder="Provide additional context..."
+                  rows={3}
+                />
 
                 <div className="flex items-center justify-end space-x-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setFlagModalOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-[#e5e2da] hover:bg-[#d0cdc5] text-[#1c1c18] font-semibold"
-                  >
+                  <Button type="button" size="sm" variant="secondary" onClick={() => setFlagModalOpen(false)}>
                     Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={flagMutation.isPending}
-                    className="px-4 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-semibold"
-                  >
-                    {flagMutation.isPending ? 'Submitting...' : 'Submit Flag'}
-                  </button>
+                  </Button>
+                  <Button type="submit" size="sm" variant="accent" isLoading={flagMutation.isPending}>
+                    Submit Flag
+                  </Button>
                 </div>
               </form>
             )}
@@ -226,23 +234,19 @@ export const ReportDetailPage: React.FC = () => {
       )}
 
       {/* Main Details Card */}
-      <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-6 md:p-8 space-y-6 shadow-sm">
+      <Card variant="container" className="shadow-sm space-y-6">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">
-              {report.status}
-            </span>
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#e5e2da] text-[#484742] uppercase tracking-wider">
+            <StatusBadge status={report.status} />
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#e5e2da] text-[#484742] uppercase tracking-wider font-headline">
               {report.category.replace('_', ' ')}
             </span>
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-900 border border-amber-300">
-              {report.severity} Severity
-            </span>
+            <StatusBadge severity={report.severity} />
           </div>
 
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1c1c18] tracking-tight font-headline">{report.title}</h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs text-[#787770] pt-1">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-[#787770]">
             <div className="flex items-center space-x-1.5">
               <User className="h-3.5 w-3.5 text-[#2f685f]" />
               <span>Reported by {report.user_name || 'Resident'}</span>
@@ -254,35 +258,43 @@ export const ReportDetailPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Visual Report Progress Timeline */}
+        <div className="border-t border-[#d0cdc5] pt-4">
+          <ReportTimeline status={report.status} verificationStatus={report.verification_status} />
+        </div>
+
         {/* Description Section */}
         <div className="space-y-2 border-t border-[#d0cdc5] pt-4">
-          <h3 className="text-xs font-semibold text-[#787770] uppercase tracking-wider font-headline">Description</h3>
+          <h3 className="text-xs font-bold text-[#787770] uppercase tracking-wider font-headline">Description</h3>
           <p className="text-sm text-[#1c1c18] leading-relaxed whitespace-pre-line font-sans">{report.description}</p>
         </div>
 
-        {/* Report Analysis Layer Section */}
+        {/* Automated Report Analysis Section */}
         <div className="space-y-3 border-t border-[#d0cdc5] pt-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-[#787770] uppercase tracking-wider flex items-center space-x-1.5 font-headline">
+            <h3 className="text-xs font-bold text-[#787770] uppercase tracking-wider flex items-center space-x-1.5 font-headline">
               <Sparkles className="h-4 w-4 text-[#2f685f]" />
-              <span>Report Analysis</span>
+              <span>Signal Analysis Layer</span>
             </h3>
 
             {(!aiAnalysis || aiAnalysis.processing_status === 'FAILED') && (
-              <button
+              <Button
+                size="sm"
+                variant="accent"
+                isLoading={triggerAnalysisMutation.isPending}
                 onClick={() => triggerAnalysisMutation.mutate(report.id)}
-                disabled={triggerAnalysisMutation.isPending}
-                className="inline-flex items-center space-x-1.5 rounded-xl border border-[#2f685f] bg-[#06291b] hover:bg-[#0a3826] px-3.5 py-1.5 text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                leftIcon={triggerAnalysisMutation.isPending ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
               >
-                {triggerAnalysisMutation.isPending ? (
-                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <Sparkles className="h-3.5 w-3.5" />
-                )}
-                <span>{aiAnalysis?.processing_status === 'FAILED' ? 'Retry Analysis' : 'Run Report Analysis'}</span>
-              </button>
+                {aiAnalysis?.processing_status === 'FAILED' ? 'Retry Analysis' : 'Run Signal Analysis'}
+              </Button>
             )}
           </div>
+
+          {!aiAnalysis && (
+            <p className="text-xs text-[#787770] italic">
+              Automated signal analysis has not been run for this report case. Click button above to queue analysis.
+            </p>
+          )}
 
           {aiAnalysis && (aiAnalysis.processing_status === 'PENDING' || aiAnalysis.processing_status === 'PROCESSING') && (
             <div className="rounded-xl border border-[#a2d8cb] bg-[#e1f3ee] p-4 flex items-center space-x-3 text-xs text-[#06291b]">
@@ -292,42 +304,35 @@ export const ReportDetailPage: React.FC = () => {
           )}
 
           {aiAnalysis && (aiAnalysis.processing_status === 'COMPLETED' || aiAnalysis.processing_status === 'REVIEW_REQUIRED') && (
-            <div className={`rounded-2xl border p-5 space-y-4 bg-[#fcf9f2] ${
-              aiAnalysis.processing_status === 'REVIEW_REQUIRED'
-                ? 'border-amber-300 bg-amber-50/60'
-                : 'border-[#e5e2da]'
-            }`}>
-              {/* Badges & Summary Row */}
+            <div className="rounded-xl border border-[#e5e2da] bg-[#fcf9f2] p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3 text-xs border-b border-[#e5e2da] pb-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">
-                    Likely Category: {aiAnalysis.category?.replace('_', ' ')}
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">
+                    Category: {aiAnalysis.category?.replace('_', ' ')}
                   </span>
-                  <span className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#e5e2da] text-[#1c1c18]">
+                  <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#e5e2da] text-[#1c1c18]">
                     Severity: {aiAnalysis.severity}
                   </span>
                 </div>
 
-                <div className="flex items-center space-x-2 text-xs font-semibold text-[#484742]">
+                <div className="flex items-center space-x-1.5 text-xs font-semibold text-[#484742]">
                   <span>Confidence:</span>
-                  <span className="px-2 py-0.5 rounded font-mono bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">
+                  <span className="px-2 py-0.5 rounded font-mono text-[11px] bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">
                     {((aiAnalysis.confidence || 0) * 100).toFixed(0)}%
                   </span>
                 </div>
               </div>
 
-              {/* Summary */}
               {aiAnalysis.summary && (
                 <div className="space-y-1 text-xs">
-                  <span className="text-[#787770] font-semibold uppercase tracking-wider text-[10px]">Summary</span>
+                  <span className="text-[#787770] font-bold uppercase tracking-wider text-[10px]">Context Summary</span>
                   <p className="text-[#1c1c18] leading-relaxed italic">"{aiAnalysis.summary}"</p>
                 </div>
               )}
 
-              {/* Keywords */}
               {aiAnalysis.keywords && aiAnalysis.keywords.length > 0 && (
                 <div className="space-y-1.5">
-                  <span className="text-[#787770] font-semibold uppercase tracking-wider text-[10px]">Keywords</span>
+                  <span className="text-[#787770] font-bold uppercase tracking-wider text-[10px]">Keywords</span>
                   <div className="flex flex-wrap gap-1.5">
                     {aiAnalysis.keywords.map((kw, idx) => (
                       <span key={idx} className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-lg bg-[#f1eee7] text-[11px] text-[#2f685f] border border-[#d0cdc5]">
@@ -338,29 +343,18 @@ export const ReportDetailPage: React.FC = () => {
                   </div>
                 </div>
               )}
-
-              {/* Key Observations */}
-              {aiAnalysis.observations && aiAnalysis.observations.length > 0 && (
-                <div className="space-y-1.5 pt-1">
-                  <span className="text-[#787770] font-semibold uppercase tracking-wider text-[10px]">Key Observations</span>
-                  <ul className="space-y-1 text-xs text-[#484742] list-disc list-inside">
-                    {aiAnalysis.observations.map((obs, idx) => (
-                      <li key={idx}>{obs}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           )}
         </div>
 
         {/* Possible Duplicates Section */}
-        {duplicateData && duplicateData.duplicates.length > 0 && (
-          <div className="space-y-3 border-t border-[#d0cdc5] pt-4">
-            <h3 className="text-xs font-semibold text-amber-900 uppercase tracking-wider flex items-center space-x-1.5 font-headline">
-              <Copy className="h-4 w-4 text-amber-700" />
-              <span>Possible Duplicates ({duplicateData.count})</span>
-            </h3>
+        <div className="space-y-3 border-t border-[#d0cdc5] pt-4">
+          <h3 className="text-xs font-bold text-[#787770] uppercase tracking-wider flex items-center space-x-1.5 font-headline">
+            <Copy className="h-4 w-4 text-[#787770]" />
+            <span>Possible Duplicates ({duplicateData ? duplicateData.count : 0})</span>
+          </h3>
+
+          {duplicateData && duplicateData.duplicates.length > 0 ? (
             <div className="space-y-2">
               {duplicateData.duplicates.map((dup) => (
                 <div key={dup.id} className="rounded-xl border border-amber-300 bg-amber-50/80 p-4 space-y-2 text-xs">
@@ -373,9 +367,9 @@ export const ReportDetailPage: React.FC = () => {
                     </span>
                     <Link
                       to={`/reports/${dup.related_report_id}`}
-                      className="inline-flex items-center space-x-1 text-[#06291b] hover:underline font-semibold"
+                      className="inline-flex items-center space-x-1 text-[#06291b] hover:underline font-bold"
                     >
-                      <span>View Report</span>
+                      <span>View Case</span>
                       <ExternalLink className="h-3 w-3" />
                     </Link>
                   </div>
@@ -383,16 +377,19 @@ export const ReportDetailPage: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-[#787770] italic">No duplicate reports detected.</p>
+          )}
+        </div>
 
         {/* Related Reports Section */}
-        {relatedData && relatedData.related_reports.length > 0 && (
-          <div className="space-y-3 border-t border-[#d0cdc5] pt-4">
-            <h3 className="text-xs font-semibold text-[#06291b] uppercase tracking-wider flex items-center space-x-1.5 font-headline">
-              <GitCompare className="h-4 w-4 text-[#2f685f]" />
-              <span>Connected Reports ({relatedData.count})</span>
-            </h3>
+        <div className="space-y-3 border-t border-[#d0cdc5] pt-4">
+          <h3 className="text-xs font-bold text-[#787770] uppercase tracking-wider flex items-center space-x-1.5 font-headline">
+            <GitCompare className="h-4 w-4 text-[#2f685f]" />
+            <span>Connected Reports ({relatedData ? relatedData.count : 0})</span>
+          </h3>
+
+          {relatedData && relatedData.related_reports.length > 0 ? (
             <div className="space-y-2">
               {relatedData.related_reports.map((rel) => (
                 <div key={rel.id} className="rounded-xl border border-[#e5e2da] bg-[#fcf9f2] p-4 space-y-2 text-xs">
@@ -405,9 +402,9 @@ export const ReportDetailPage: React.FC = () => {
                     </span>
                     <Link
                       to={`/reports/${rel.related_report_id}`}
-                      className="inline-flex items-center space-x-1 text-[#06291b] hover:underline font-semibold"
+                      className="inline-flex items-center space-x-1 text-[#06291b] hover:underline font-bold"
                     >
-                      <span>View Report</span>
+                      <span>View Case</span>
                       <ExternalLink className="h-3 w-3" />
                     </Link>
                   </div>
@@ -415,17 +412,19 @@ export const ReportDetailPage: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-[#787770] italic">No related reports found.</p>
+          )}
+        </div>
 
         {/* Location Details */}
         <div className="space-y-2 border-t border-[#d0cdc5] pt-4">
-          <h3 className="text-xs font-semibold text-[#787770] uppercase tracking-wider font-headline">Location</h3>
+          <h3 className="text-xs font-bold text-[#787770] uppercase tracking-wider font-headline">Location</h3>
           <div className="rounded-xl border border-[#e5e2da] bg-[#fcf9f2] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div className="flex items-start space-x-2 text-[#1c1c18]">
               <MapPin className="h-4 w-4 text-[#2f685f] flex-shrink-0 mt-0.5" />
               <div>
-                <div className="font-semibold text-[#1c1c18]">{report.address || 'Specified Location'}</div>
+                <div className="font-bold text-[#1c1c18]">{report.address || 'Specified Location'}</div>
                 <div className="text-[#787770] font-mono text-[11px]">
                   {report.latitude}, {report.longitude}
                 </div>
@@ -437,8 +436,8 @@ export const ReportDetailPage: React.FC = () => {
         {/* Media Attachments Gallery */}
         <div className="space-y-3 border-t border-[#d0cdc5] pt-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-[#787770] uppercase tracking-wider font-headline">
-              Photo Attachments ({report.media.length})
+            <h3 className="text-xs font-bold text-[#787770] uppercase tracking-wider font-headline">
+              Photo Evidence ({report.media.length})
             </h3>
             {canModify && (
               <label className="inline-flex items-center space-x-1 text-xs text-[#06291b] hover:underline cursor-pointer font-semibold">
@@ -476,7 +475,7 @@ export const ReportDetailPage: React.FC = () => {
                 <div key={item.id} className="relative group rounded-xl border border-[#e5e2da] bg-[#fcf9f2] overflow-hidden">
                   <img
                     src={item.media_url}
-                    alt="Report attachment"
+                    alt="Report evidence"
                     className="h-48 w-full object-cover"
                   />
                   {canModify && (
@@ -493,8 +492,7 @@ export const ReportDetailPage: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
-

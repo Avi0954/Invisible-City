@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useReports } from '../hooks/useReports';
 import { ReportCategory, ReportSeverity, ReportStatus } from '../types/report';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { EmptyState } from '../components/ui/EmptyState';
+import { Select } from '../components/ui/Input';
 import {
   FileText,
-  Clock,
-  AlertCircle,
   Filter,
   MapPin,
   ChevronLeft,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  PlusCircle
 } from 'lucide-react';
 
 export const MyReportsPage: React.FC = () => {
@@ -28,79 +32,49 @@ export const MyReportsPage: React.FC = () => {
     status: statusFilter ? (statusFilter as ReportStatus) : undefined,
   });
 
-  const getStatusBadge = (status: ReportStatus) => {
-    switch (status) {
-      case 'OPEN':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-100 text-sky-900 border border-sky-300">OPEN</span>;
-      case 'VERIFIED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">VERIFIED</span>;
-      case 'IN_PROGRESS':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-900 border border-amber-300">IN PROGRESS</span>;
-      case 'RESOLVED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb]">RESOLVED</span>;
-      case 'REJECTED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-red-100 text-red-900 border border-red-300">REJECTED</span>;
-    }
-  };
-
-  const getSeverityBadge = (severity: ReportSeverity) => {
-    switch (severity) {
-      case 'LOW':
-        return <span className="text-[#787770] text-xs font-medium">Low Severity</span>;
-      case 'MEDIUM':
-        return <span className="text-amber-700 text-xs font-medium">Medium Severity</span>;
-      case 'HIGH':
-        return <span className="text-amber-800 text-xs font-semibold">High Severity</span>;
-      case 'CRITICAL':
-        return <span className="text-red-700 text-xs font-bold">Critical Severity</span>;
-    }
-  };
-
   return (
-    <div className="space-y-6 font-sans text-[#1c1c18]">
+    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans text-[#1c1c18]">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#1c1c18] tracking-tight flex items-center space-x-2 font-headline">
-            <FileText className="h-6 w-6 text-[#2f685f]" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-2.5 font-headline">
+            <FileText className="h-7 w-7 text-[#2f685f]" />
             <span>My Reports</span>
           </h1>
-          <p className="text-xs text-[#787770]">Track your submitted community reports and status updates</p>
+          <p className="text-xs text-[#787770]">Track your submitted community reports and resolution status updates</p>
         </div>
 
-        <Link
-          to="/report"
-          className="inline-flex items-center space-x-2 rounded-xl bg-[#06291b] hover:bg-[#0a3826] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-all w-fit font-headline"
-        >
-          <AlertCircle className="h-4 w-4" />
-          <span>Report an Issue</span>
+        <Link to="/report">
+          <Button size="sm" leftIcon={<PlusCircle className="h-4 w-4" />}>
+            Report an Issue
+          </Button>
         </Link>
       </div>
 
-      {/* Summary Row */}
+      {/* Summary KPI Cards */}
       {data && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-4 space-y-1">
-            <div className="text-xs text-[#787770] font-medium font-sans">Total Reports</div>
-            <div className="text-2xl font-bold text-[#1c1c18] font-headline">{data.total}</div>
-          </div>
-          <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-4 space-y-1">
-            <div className="text-xs text-[#787770] font-medium font-sans">Open</div>
-            <div className="text-2xl font-bold text-sky-800 font-headline">
+          <Card variant="surface" className="p-4 space-y-1">
+            <div className="text-xs text-[#787770] font-bold uppercase tracking-wider font-headline">Total Submissions</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#1c1c18] font-headline">{data.total}</div>
+          </Card>
+          <Card variant="surface" className="p-4 space-y-1">
+            <div className="text-xs text-sky-900 font-bold uppercase tracking-wider font-headline">Open</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-sky-800 font-headline">
               {data.items.filter(r => r.status === 'OPEN').length}
             </div>
-          </div>
-          <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-4 space-y-1">
-            <div className="text-xs text-[#787770] font-medium font-sans">In Progress</div>
-            <div className="text-2xl font-bold text-amber-800 font-headline">
+          </Card>
+          <Card variant="surface" className="p-4 space-y-1">
+            <div className="text-xs text-amber-900 font-bold uppercase tracking-wider font-headline">In Progress</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-amber-800 font-headline">
               {data.items.filter(r => r.status === 'IN_PROGRESS').length}
             </div>
-          </div>
-          <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-4 space-y-1">
-            <div className="text-xs text-[#787770] font-medium font-sans">Resolved</div>
-            <div className="text-2xl font-bold text-[#06291b] font-headline">
+          </Card>
+          <Card variant="surface" className="p-4 space-y-1">
+            <div className="text-xs text-[#06291b] font-bold uppercase tracking-wider font-headline">Resolved</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#06291b] font-headline">
               {data.items.filter(r => r.status === 'RESOLVED').length}
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -111,90 +85,99 @@ export const MyReportsPage: React.FC = () => {
           <span className="font-semibold">Filter:</span>
         </div>
 
-        <select
+        <Select
           value={categoryFilter}
           onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none"
+          className="w-auto py-1 px-3 text-xs"
         >
           <option value="">All Categories</option>
           <option value="POTHOLE">Potholes & Roads</option>
-          <option value="GARBAGE">Garbage & Sanitation</option>
+          <option value="GARBAGE">Garbage & Waste</option>
           <option value="STREETLIGHT">Streetlights & Power</option>
           <option value="WATER_LEAK">Water & Sewage</option>
           <option value="DAMAGED_INFRASTRUCTURE">Damaged Infrastructure</option>
           <option value="OTHER">Other Issues</option>
-        </select>
+        </Select>
 
-        <select
+        <Select
           value={severityFilter}
           onChange={(e) => { setSeverityFilter(e.target.value); setPage(1); }}
-          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none"
+          className="w-auto py-1 px-3 text-xs"
         >
           <option value="">All Severities</option>
-          <option value="LOW">Low</option>
-          <option value="MEDIUM">Medium</option>
-          <option value="HIGH">High</option>
-          <option value="CRITICAL">Critical</option>
-        </select>
+          <option value="LOW">Low Severity</option>
+          <option value="MEDIUM">Medium Severity</option>
+          <option value="HIGH">High Severity</option>
+          <option value="CRITICAL">Critical Severity</option>
+        </Select>
 
-        <select
+        <Select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="rounded-xl border border-[#d0cdc5] bg-[#fcf9f2] px-3 py-1.5 text-xs text-[#1c1c18] focus:outline-none"
+          className="w-auto py-1 px-3 text-xs"
         >
           <option value="">All Statuses</option>
           <option value="OPEN">Open</option>
           <option value="VERIFIED">Verified</option>
           <option value="IN_PROGRESS">In Progress</option>
           <option value="RESOLVED">Resolved</option>
-        </select>
+        </Select>
       </div>
 
-      {/* Loading & Empty States */}
+      {/* Loading & Error States */}
       {isLoading && (
-        <div className="p-12 text-center text-[#787770] space-y-3">
+        <div className="p-16 text-center text-[#787770] space-y-3">
           <div className="h-6 w-6 rounded-full border-2 border-[#06291b] border-t-transparent animate-spin mx-auto" />
-          <p className="text-xs">Loading reports...</p>
+          <p className="text-xs">Loading submitted reports...</p>
         </div>
       )}
 
       {isError && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs text-red-800">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 font-semibold">
           Failed to load reports. Please try again.
         </div>
       )}
 
+      {/* Empty State */}
       {data && data.items.length === 0 && (
-        <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-12 text-center space-y-4">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#e5e2da] text-[#787770]">
-            <Clock className="h-6 w-6" />
-          </div>
-          <h3 className="text-lg font-semibold text-[#1c1c18] font-headline">No Reports Found</h3>
-          <p className="text-xs text-[#787770] max-w-md mx-auto">
-            You haven't submitted any reports matching your filters.
-          </p>
-        </div>
+        <EmptyState
+          icon={FileText}
+          title={categoryFilter || severityFilter || statusFilter ? 'No Matching Reports' : 'No Reports Submitted Yet'}
+          description={
+            categoryFilter || severityFilter || statusFilter
+              ? 'No submitted reports match your current filter criteria. Try clearing your filters.'
+              : 'Be the first to report an issue in your area to notify municipal teams.'
+          }
+          action={
+            <Link to="/report">
+              <Button size="sm" leftIcon={<PlusCircle className="h-4 w-4" />}>
+                Report an Issue
+              </Button>
+            </Link>
+          }
+        />
       )}
 
       {/* Reports List Cards */}
       {data && data.items.length > 0 && (
         <div className="space-y-4">
           {data.items.map((report) => (
-            <div
+            <Card
               key={report.id}
-              className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] p-5 hover:border-[#d0cdc5] transition-all flex flex-col sm:flex-row justify-between gap-4 shadow-sm"
+              variant="container"
+              className="hover:border-[#d0cdc5] transition-all flex flex-col sm:flex-row justify-between gap-4 shadow-xs"
             >
               <div className="space-y-2.5 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  {getStatusBadge(report.status)}
-                  <span className="text-[11px] font-semibold text-[#484742] uppercase tracking-wider bg-[#fcf9f2] px-2 py-0.5 rounded border border-[#e5e2da]">
+                  <StatusBadge status={report.status} />
+                  <span className="text-[10px] font-bold text-[#484742] uppercase tracking-wider bg-[#fcf9f2] px-2 py-0.5 rounded border border-[#e5e2da] font-headline">
                     {report.category.replace('_', ' ')}
                   </span>
-                  {getSeverityBadge(report.severity)}
+                  <StatusBadge severity={report.severity} size="sm" />
                 </div>
 
                 <h3 className="text-lg font-bold text-[#1c1c18] font-headline">{report.title}</h3>
-                <p className="text-xs text-[#484742] line-clamp-2">{report.description}</p>
+                <p className="text-xs text-[#484742] line-clamp-2 leading-relaxed">{report.description}</p>
 
                 <div className="flex flex-wrap items-center gap-4 text-[11px] text-[#787770] pt-1">
                   <div className="flex items-center space-x-1">
@@ -216,38 +199,40 @@ export const MyReportsPage: React.FC = () => {
 
                 <Link
                   to={`/reports/${report.id}`}
-                  className="inline-flex items-center space-x-1 text-xs font-semibold text-[#06291b] hover:underline transition-colors"
+                  className="inline-flex items-center space-x-1 text-xs font-bold text-[#06291b] hover:underline transition-colors"
                 >
                   <span>View Details</span>
                   <ExternalLink className="h-3.5 w-3.5" />
                 </Link>
               </div>
-            </div>
+            </Card>
           ))}
 
           {/* Pagination Controls */}
           {data.pages > 1 && (
             <div className="flex items-center justify-between pt-4 border-t border-[#e5e2da] text-xs">
-              <span className="text-[#787770]">
+              <span className="text-[#787770] font-mono">
                 Page {data.page} of {data.pages} ({data.total} total reports)
               </span>
               <div className="flex space-x-2">
-                <button
+                <Button
+                  size="sm"
+                  variant="secondary"
                   disabled={page <= 1}
                   onClick={() => setPage((p) => p - 1)}
-                  className="flex items-center space-x-1 rounded-xl border border-[#d0cdc5] bg-[#f1eee7] px-3 py-1.5 text-[#1c1c18] disabled:opacity-40 hover:bg-[#e5e2da]"
+                  leftIcon={<ChevronLeft className="h-4 w-4" />}
                 >
-                  <ChevronLeft className="h-4 w-4" />
-                  <span>Previous</span>
-                </button>
-                <button
+                  Previous
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
                   disabled={page >= data.pages}
                   onClick={() => setPage((p) => p + 1)}
-                  className="flex items-center space-x-1 rounded-xl border border-[#d0cdc5] bg-[#f1eee7] px-3 py-1.5 text-[#1c1c18] disabled:opacity-40 hover:bg-[#e5e2da]"
+                  rightIcon={<ChevronRight className="h-4 w-4" />}
                 >
-                  <span>Next</span>
-                  <ChevronRight className="h-4 w-4" />
-                </button>
+                  Next
+                </Button>
               </div>
             </div>
           )}
@@ -256,4 +241,3 @@ export const MyReportsPage: React.FC = () => {
     </div>
   );
 };
-
