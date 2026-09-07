@@ -25,7 +25,7 @@ export const MyReportsPage: React.FC = () => {
   });
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 min-h-[calc(100vh-4.5rem)] font-sans text-[#1c1c18]">
+    <div className="space-y-8 max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-8 lg:py-12 min-h-[calc(100vh-4.5rem)] font-sans text-[#1c1c18]">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e5e2da] pb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-3 font-headline">

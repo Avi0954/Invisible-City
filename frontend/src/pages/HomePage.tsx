@@ -57,7 +57,7 @@ export const HomePage: React.FC = () => {
           1. HERO SECTION & CONCEPT STATEMENT (DESKTOP min-h-[70vh])
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] min-h-[70vh] flex flex-col justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 w-full">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-12 w-full">
           <div className="max-w-3xl space-y-6">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#e1f3ee] text-[#06291b] border border-[#a2d8cb] text-xs font-semibold">
               <Sparkles className="h-4 w-4 text-[#2f685f]" />
@@ -121,7 +121,7 @@ export const HomePage: React.FC = () => {
           2. LIVE CITY SNAPSHOT (REAL DATABASE METRICS)
          ================================================== */}
       <section className="w-full bg-[#f1eee7] border-b border-[#e5e2da] py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 w-full">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-8 w-full">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline">
               Live City Snapshot
@@ -167,7 +167,7 @@ export const HomePage: React.FC = () => {
           3. CENTRAL FEATURE: HOW IT WORKS (5-STEP PROCESS)
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#fcf9f2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 w-full">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-12 w-full">
           <div className="space-y-2">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
               How Invisible City Works
@@ -235,7 +235,7 @@ export const HomePage: React.FC = () => {
           4. AI VALUE DEMONSTRATION BLOCK
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#f1eee7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 w-full">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10 w-full">
           <div className="space-y-2">
             <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#06291b] uppercase tracking-wider font-headline">
               <Sparkles className="h-4 w-4 text-[#2f685f]" />
@@ -302,7 +302,7 @@ export const HomePage: React.FC = () => {
           5. CITY MAP PREVIEW SECTION
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#fcf9f2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 w-full">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10 w-full">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
@@ -333,7 +333,7 @@ export const HomePage: React.FC = () => {
           6. ISSUE CATEGORIES
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#f1eee7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 w-full">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 space-y-10 w-full">
           <div className="space-y-1">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
               Supported Categories
@@ -374,7 +374,7 @@ export const HomePage: React.FC = () => {
           7. FINAL HOME CALL TO ACTION
          ================================================== */}
       <section className="w-full py-20 lg:py-28 bg-[#06291b] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 w-full">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 text-center space-y-6 w-full">
           <h2 className="text-3xl sm:text-5xl font-extrabold font-headline tracking-tight max-w-3xl mx-auto">
             See something that needs attention?
           </h2>

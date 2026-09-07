@@ -172,7 +172,7 @@ export const MapPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 min-h-[calc(100vh-4.5rem)] flex flex-col font-sans text-[#1c1c18]">
+    <div className="space-y-4 max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-6 min-h-[calc(100vh-4.5rem)] flex flex-col font-sans text-[#1c1c18]">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

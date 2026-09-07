@@ -173,7 +173,7 @@ export const ReportPage: React.FC = () => {
   const isSubmitting = createReportMutation.isPending || uploadMediaMutation.isPending;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 lg:py-16 space-y-8 font-sans text-[#1c1c18]">
+    <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 py-10 lg:py-16 space-y-8 font-sans text-[#1c1c18]">
       <div className="space-y-2">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] tracking-tight flex items-center space-x-3 font-headline">
           <PlusCircle className="h-8 w-8 text-[#2f685f]" />

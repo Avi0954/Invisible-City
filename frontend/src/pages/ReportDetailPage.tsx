@@ -145,7 +145,7 @@ export const ReportDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 min-h-[calc(100vh-4.5rem)] font-sans text-[#1c1c18] space-y-6">
+    <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-8 lg:py-12 min-h-[calc(100vh-4.5rem)] font-sans text-[#1c1c18] space-y-6">
       {/* Top Header & Back Nav */}
       <div className="flex items-center justify-between border-b border-[#e5e2da] pb-4">
         <Button
