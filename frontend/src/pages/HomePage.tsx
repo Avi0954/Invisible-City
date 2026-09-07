@@ -86,10 +86,8 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* ==================================================
-              HERO VISUAL FLOW STRIP
-             ================================================== */}
-          <div className="p-6 lg:p-8 rounded-3xl bg-[#f1eee7] border border-[#e5e2da] shadow-xs">
+          {/* HERO VISUAL FLOW STRIP */}
+          <div className="p-6 lg:p-8 rounded-3xl bg-[#f1eee7] border border-[#e5e2da] shadow-xs w-full">
             <div className="text-xs font-bold text-[#787770] uppercase tracking-wider mb-4 font-headline">
               The Complete Civic Flow
             </div>
@@ -123,7 +121,7 @@ export const HomePage: React.FC = () => {
           2. LIVE CITY SNAPSHOT (REAL DATABASE METRICS)
          ================================================== */}
       <section className="w-full bg-[#f1eee7] border-b border-[#e5e2da] py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 w-full">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline">
               Live City Snapshot
@@ -131,7 +129,7 @@ export const HomePage: React.FC = () => {
             <span className="text-xs text-[#787770] font-mono">Real database records</span>
           </div>
 
-          <div className="grid grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 w-full">
             <Card variant="surface" className="p-6 lg:p-8 space-y-3 min-h-[160px] flex flex-col justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline">
                 Reports
@@ -169,8 +167,8 @@ export const HomePage: React.FC = () => {
           3. CENTRAL FEATURE: HOW IT WORKS (5-STEP PROCESS)
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#fcf9f2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="max-w-xl space-y-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 w-full">
+          <div className="space-y-2">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
               How Invisible City Works
             </h2>
@@ -179,45 +177,55 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 lg:gap-6">
-            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3">
-              <div className="text-xs font-mono font-extrabold text-[#06291b]">01</div>
-              <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">SPOT</h3>
-              <p className="text-xs text-[#484742] leading-relaxed">
-                See something wrong in your neighborhood.
-              </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 w-full">
+            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-extrabold text-[#06291b]">01</div>
+                <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">SPOT</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  See something wrong in your neighborhood.
+                </p>
+              </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3">
-              <div className="text-xs font-mono font-extrabold text-[#06291b]">02</div>
-              <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">REPORT</h3>
-              <p className="text-xs text-[#484742] leading-relaxed">
-                Add location, photo evidence, and details.
-              </p>
+            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-extrabold text-[#06291b]">02</div>
+                <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">REPORT</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Add location, photo evidence, and details.
+                </p>
+              </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#e1f3ee] border border-[#a2d8cb] space-y-3">
-              <div className="text-xs font-mono font-extrabold text-[#06291b]">03</div>
-              <h3 className="text-sm font-extrabold text-[#06291b] font-headline uppercase">ANALYZE</h3>
-              <p className="text-xs text-[#06291b] leading-relaxed">
-                AI categorizes and assesses severity instantly.
-              </p>
+            <div className="p-6 rounded-2xl bg-[#e1f3ee] border border-[#a2d8cb] space-y-3 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-extrabold text-[#06291b]">03</div>
+                <h3 className="text-sm font-extrabold text-[#06291b] font-headline uppercase">ANALYZE</h3>
+                <p className="text-xs text-[#06291b] leading-relaxed">
+                  AI categorizes and assesses severity instantly.
+                </p>
+              </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3">
-              <div className="text-xs font-mono font-extrabold text-[#06291b]">04</div>
-              <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">VERIFY</h3>
-              <p className="text-xs text-[#484742] leading-relaxed">
-                Municipal reviewers validate the report.
-              </p>
+            <div className="p-6 rounded-2xl bg-[#f1eee7] border border-[#e5e2da] space-y-3 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-extrabold text-[#06291b]">04</div>
+                <h3 className="text-sm font-extrabold text-[#1c1c18] font-headline uppercase">VERIFY</h3>
+                <p className="text-xs text-[#484742] leading-relaxed">
+                  Municipal reviewers validate the report.
+                </p>
+              </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#06291b] text-white space-y-3">
-              <div className="text-xs font-mono font-extrabold text-[#8ac9be]">05</div>
-              <h3 className="text-sm font-extrabold text-white font-headline uppercase">RESOLVE</h3>
-              <p className="text-xs text-white/80 leading-relaxed">
-                Track progress through final completion.
-              </p>
+            <div className="p-6 rounded-2xl bg-[#06291b] text-white space-y-3 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-extrabold text-[#8ac9be]">05</div>
+                <h3 className="text-sm font-extrabold text-white font-headline uppercase">RESOLVE</h3>
+                <p className="text-xs text-white/80 leading-relaxed">
+                  Track progress through final completion.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -227,8 +235,8 @@ export const HomePage: React.FC = () => {
           4. AI VALUE DEMONSTRATION BLOCK
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#f1eee7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="max-w-xl space-y-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 w-full">
+          <div className="space-y-2">
             <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#06291b] uppercase tracking-wider font-headline">
               <Sparkles className="h-4 w-4 text-[#2f685f]" />
               <span>AI Classification Signal</span>
@@ -241,20 +249,22 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch w-full">
             {/* Citizen Input Mock */}
-            <div className="md:col-span-6 p-8 rounded-3xl bg-[#fcf9f2] border border-[#e5e2da] space-y-4">
-              <div className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline flex items-center space-x-1.5">
-                <FileText className="h-4 w-4 text-[#2f685f]" />
-                <span>Citizen Input</span>
+            <div className="lg:col-span-6 p-8 rounded-3xl bg-[#fcf9f2] border border-[#e5e2da] space-y-4 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="text-xs font-bold uppercase tracking-wider text-[#787770] font-headline flex items-center space-x-1.5">
+                  <FileText className="h-4 w-4 text-[#2f685f]" />
+                  <span>Citizen Input</span>
+                </div>
+                <p className="text-sm text-[#1c1c18] font-medium leading-relaxed italic bg-[#f1eee7] p-5 rounded-2xl border border-[#e5e2da]">
+                  "Large pothole near the main road causing severe traffic slowdowns and rim damage to cars during evening rain."
+                </p>
               </div>
-              <p className="text-sm text-[#1c1c18] font-medium leading-relaxed italic bg-[#f1eee7] p-5 rounded-2xl border border-[#e5e2da]">
-                "Large pothole near the main road causing severe traffic slowdowns and rim damage to cars during evening rain."
-              </p>
             </div>
 
             {/* AI Output Card */}
-            <div className="md:col-span-6 p-8 rounded-3xl bg-[#06291b] text-white space-y-6 shadow-md">
+            <div className="lg:col-span-6 p-8 rounded-3xl bg-[#06291b] text-white space-y-6 shadow-md flex flex-col justify-between">
               <div className="flex items-center justify-between border-b border-white/15 pb-4">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#8ac9be] font-headline flex items-center space-x-1.5">
                   <Sparkles className="h-4 w-4" />
@@ -292,7 +302,7 @@ export const HomePage: React.FC = () => {
           5. CITY MAP PREVIEW SECTION
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#fcf9f2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 w-full">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
@@ -323,15 +333,15 @@ export const HomePage: React.FC = () => {
           6. ISSUE CATEGORIES
          ================================================== */}
       <section className="w-full py-20 lg:py-28 border-b border-[#e5e2da] bg-[#f1eee7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="max-w-xl space-y-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 w-full">
+          <div className="space-y-1">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1c1c18] font-headline tracking-tight">
               Supported Categories
             </h2>
             <p className="text-xs text-[#787770]">Report problems across infrastructure and municipal services</p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6 text-xs font-bold font-headline text-[#1c1c18]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6 w-full text-xs font-bold font-headline text-[#1c1c18]">
             <div className="p-6 rounded-2xl bg-[#fcf9f2] border border-[#e5e2da] flex flex-col items-center justify-center space-y-3 text-center hover:border-[#06291b] transition-colors">
               <MapPin className="h-6 w-6 text-[#2f685f]" />
               <span>Roads</span>
@@ -364,11 +374,11 @@ export const HomePage: React.FC = () => {
           7. FINAL HOME CALL TO ACTION
          ================================================== */}
       <section className="w-full py-20 lg:py-28 bg-[#06291b] text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-          <h2 className="text-3xl sm:text-5xl font-extrabold font-headline tracking-tight">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 w-full">
+          <h2 className="text-3xl sm:text-5xl font-extrabold font-headline tracking-tight max-w-3xl mx-auto">
             See something that needs attention?
           </h2>
-          <p className="text-sm sm:text-base text-white/80 max-w-xl mx-auto font-sans leading-relaxed">
+          <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto font-sans leading-relaxed">
             Report an issue in your neighborhood. Help city teams locate, prioritize, and resolve problems faster.
           </p>
           <div className="pt-2">
