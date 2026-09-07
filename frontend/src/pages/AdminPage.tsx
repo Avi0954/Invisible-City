@@ -13,6 +13,8 @@ import { Card } from '../components/ui/Card';
 import { Select } from '../components/ui/Input';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { EmptyState } from '../components/ui/EmptyState';
+import { Modal } from '../components/ui/Modal';
+import { Pagination } from '../components/ui/Pagination';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -235,37 +237,28 @@ export const AdminPage: React.FC = () => {
           </div>
 
           {/* Priority Reasons Modal */}
-          {selectedReasons && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1c1c18]/60 backdrop-blur-sm">
-              <div className="rounded-2xl border border-[#e5e2da] bg-[#fcf9f2] p-6 max-w-md w-full space-y-4 shadow-2xl">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-[#1c1c18] text-sm flex items-center space-x-1.5 font-headline">
-                    <AlertCircle className="h-4 w-4 text-[#2f685f]" />
-                    <span>Priority Score Context</span>
-                  </h3>
-                  <button
-                    onClick={() => setSelectedReasons(null)}
-                    className="text-[#787770] hover:text-[#1c1c18]"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-
-                <ul className="space-y-2 text-xs text-[#484742]">
-                  {selectedReasons.reasons.map((r, idx) => (
-                    <li key={idx} className="flex items-start space-x-2 bg-[#f1eee7] p-2.5 rounded-xl border border-[#e5e2da]">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-[#2f685f] flex-shrink-0 mt-0.5" />
-                      <span>{r}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button size="sm" className="w-full" onClick={() => setSelectedReasons(null)}>
-                  Close
-                </Button>
-              </div>
-            </div>
-          )}
+          <Modal
+            isOpen={!!selectedReasons}
+            onClose={() => setSelectedReasons(null)}
+            title="Priority Score Context"
+            subtitle="Calculated weighting factors driving issue priority ranking"
+            footer={
+              <Button size="sm" className="w-full" onClick={() => setSelectedReasons(null)}>
+                Close Context
+              </Button>
+            }
+          >
+            {selectedReasons && (
+              <ul className="space-y-2 text-xs text-[#484742]">
+                {selectedReasons.reasons.map((r, idx) => (
+                  <li key={idx} className="flex items-start space-x-2 bg-[#f1eee7] p-2.5 rounded-xl border border-[#e5e2da]">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#2f685f] flex-shrink-0 mt-0.5" />
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Modal>
 
           {/* Triage Table */}
           <div className="rounded-2xl border border-[#e5e2da] bg-[#f1eee7] overflow-hidden shadow-xs">

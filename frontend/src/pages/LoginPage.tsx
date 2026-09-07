@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
@@ -13,24 +13,34 @@ export const LoginPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!email || !password) {
+      setError('Please provide both email address and password.');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await login({ email, password });
+      await login({ email: email.trim(), password });
       toast.success('Signed in successfully.');
-      navigate('/');
     } catch (err: any) {
-      const errMsg = err.message || 'Failed to sign in. Please check your credentials.';
+      const errMsg = typeof err === 'string' ? err : err.message || 'Failed to sign in. Please check your credentials.';
       setError(errMsg);
       toast.error(errMsg);
-    } finally {
       setLoading(false);
     }
   };

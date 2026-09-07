@@ -1,20 +1,25 @@
 import React from 'react';
 import { ReportStatus } from '../../types/report';
-import { CheckCircle2, Clock, ShieldCheck, Wrench, CheckCheck, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock, ShieldCheck, Wrench, CheckCheck, XCircle, Sparkles } from 'lucide-react';
 
 export interface ReportTimelineProps {
   status: ReportStatus;
   verificationStatus?: string;
+  hasAnalysis?: boolean;
 }
 
-export const ReportTimeline: React.FC<ReportTimelineProps> = ({ status, verificationStatus }) => {
+export const ReportTimeline: React.FC<ReportTimelineProps> = ({
+  status,
+  verificationStatus,
+  hasAnalysis = true,
+}) => {
   if (status === 'REJECTED' || verificationStatus === 'REJECTED') {
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 p-4 flex items-center space-x-3 text-xs text-red-900">
+      <div className="rounded-xl border border-red-200 bg-red-50 p-4 flex items-center space-x-3 text-xs text-red-900 font-sans">
         <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
         <div>
           <span className="font-bold block">Report Rejected</span>
-          <span className="text-[11px] text-red-800">This report was reviewed by municipal teams and determined not to require action.</span>
+          <span className="text-[11px] text-red-800">This report was reviewed by municipal reviewers and determined not to require field intervention.</span>
         </div>
       </div>
     );
@@ -22,29 +27,31 @@ export const ReportTimeline: React.FC<ReportTimelineProps> = ({ status, verifica
 
   const steps = [
     { key: 'REPORTED', label: 'Reported', icon: Clock },
+    { key: 'AI_ANALYZED', label: 'AI Analyzed', icon: Sparkles },
     { key: 'UNDER_REVIEW', label: 'Under Review', icon: ShieldCheck },
-    { key: 'VERIFIED', label: 'Verified', icon: CheckCircle2 },
     { key: 'IN_PROGRESS', label: 'In Progress', icon: Wrench },
     { key: 'RESOLVED', label: 'Resolved', icon: CheckCheck },
   ];
 
-  // Map status string to step index (1-based or 0-based)
-  let currentStepIndex = 0; // Reported
+  let currentStepIndex = 1; // Default to AI Analyzed
   if (status === 'RESOLVED') {
     currentStepIndex = 4;
   } else if (status === 'IN_PROGRESS') {
     currentStepIndex = 3;
-  } else if (status === 'VERIFIED' || verificationStatus === 'ADMIN_VERIFIED') {
+  } else if (status === 'VERIFIED' || verificationStatus === 'ADMIN_VERIFIED' || verificationStatus === 'UNDER_REVIEW') {
     currentStepIndex = 2;
-  } else if (verificationStatus === 'UNDER_REVIEW') {
+  } else if (hasAnalysis) {
     currentStepIndex = 1;
+  } else {
+    currentStepIndex = 0;
   }
 
   return (
-    <div className="w-full py-4 space-y-2 font-sans">
+    <div className="w-full py-4 space-y-3 font-sans">
       <div className="text-[11px] font-bold uppercase tracking-wider text-[#787770] font-headline">
-        Report Resolution Progress
+        Report Lifecycle Progress
       </div>
+
       <div className="grid grid-cols-5 gap-2 relative items-start">
         {steps.map((step, idx) => {
           const isDone = idx <= currentStepIndex;

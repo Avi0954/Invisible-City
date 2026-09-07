@@ -7,6 +7,7 @@ import { useFlagReport } from '../hooks/useAdmin';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
+import { Modal } from '../components/ui/Modal';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { ReportTimeline } from '../components/ui/ReportTimeline';
 import { Select, Textarea } from '../components/ui/Input';
@@ -180,58 +181,49 @@ export const ReportDetailPage: React.FC = () => {
       </div>
 
       {/* Flag Moderation Modal */}
-      {flagModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1c1c18]/60 backdrop-blur-sm">
-          <div className="rounded-2xl border border-[#e5e2da] bg-[#fcf9f2] p-6 max-w-md w-full space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-[#1c1c18] text-sm flex items-center space-x-1.5 font-headline">
-                <Flag className="h-4 w-4 text-amber-600" />
-                <span>Flag Report for Moderation</span>
-              </h3>
-              <button onClick={() => setFlagModalOpen(false)} className="text-[#787770] hover:text-[#1c1c18]">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            {flagSuccess ? (
-              <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-4 text-xs text-emerald-900 text-center font-semibold">
-                ✓ Flag submitted for community moderation.
-              </div>
-            ) : (
-              <form onSubmit={handleFlagSubmit} className="space-y-4 text-xs">
-                <Select
-                  label="Flag Reason"
-                  value={flagReason}
-                  onChange={(e) => setFlagReason(e.target.value)}
-                >
-                  <option value="FALSE_REPORT">False or Spam Report</option>
-                  <option value="DUPLICATE">Duplicate of Existing Report</option>
-                  <option value="INCORRECT_LOCATION">Incorrect GPS Location</option>
-                  <option value="INAPPROPRIATE_CONTENT">Inappropriate Content</option>
-                  <option value="ALREADY_RESOLVED">Already Resolved Issue</option>
-                </Select>
-
-                <Textarea
-                  label="Additional Details (Optional)"
-                  value={flagDetails}
-                  onChange={(e) => setFlagDetails(e.target.value)}
-                  placeholder="Provide additional context..."
-                  rows={3}
-                />
-
-                <div className="flex items-center justify-end space-x-2 pt-2">
-                  <Button type="button" size="sm" variant="secondary" onClick={() => setFlagModalOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" size="sm" variant="accent" isLoading={flagMutation.isPending}>
-                    Submit Flag
-                  </Button>
-                </div>
-              </form>
-            )}
+      <Modal
+        isOpen={flagModalOpen}
+        onClose={() => setFlagModalOpen(false)}
+        title="Flag Report for Moderation"
+        subtitle="Submit a moderation report for reviewer evaluation"
+      >
+        {flagSuccess ? (
+          <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-4 text-xs text-emerald-900 text-center font-semibold">
+            ✓ Flag submitted for community moderation.
           </div>
-        </div>
-      )}
+        ) : (
+          <form onSubmit={handleFlagSubmit} className="space-y-4 text-xs">
+            <Select
+              label="Flag Reason"
+              value={flagReason}
+              onChange={(e) => setFlagReason(e.target.value)}
+            >
+              <option value="FALSE_REPORT">False or Spam Report</option>
+              <option value="DUPLICATE">Duplicate of Existing Report</option>
+              <option value="INCORRECT_LOCATION">Incorrect GPS Location</option>
+              <option value="INAPPROPRIATE_CONTENT">Inappropriate Content</option>
+              <option value="ALREADY_RESOLVED">Already Resolved Issue</option>
+            </Select>
+
+            <Textarea
+              label="Additional Details (Optional)"
+              value={flagDetails}
+              onChange={(e) => setFlagDetails(e.target.value)}
+              placeholder="Provide additional context..."
+              rows={3}
+            />
+
+            <div className="flex items-center justify-end space-x-2 pt-2">
+              <Button type="button" size="sm" variant="secondary" onClick={() => setFlagModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" variant="accent" isLoading={flagMutation.isPending}>
+                Submit Flag
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
 
       {/* Main Details Card */}
       <Card variant="container" className="shadow-sm space-y-6">

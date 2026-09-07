@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types/auth';
@@ -16,24 +16,39 @@ export const RegisterPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { register } = useAuth();
+  const { register, isAuthenticated } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!name.trim() || !email.trim() || !password) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await register({ name, email, password, role });
+      await register({ name: name.trim(), email: email.trim(), password, role });
       toast.success('Account created successfully.');
-      navigate('/');
     } catch (err: any) {
-      const errMsg = err.message || 'Registration failed. Please check your inputs.';
+      const errMsg = typeof err === 'string' ? err : err.message || 'Registration failed. Please check your inputs.';
       setError(errMsg);
       toast.error(errMsg);
-    } finally {
       setLoading(false);
     }
   };

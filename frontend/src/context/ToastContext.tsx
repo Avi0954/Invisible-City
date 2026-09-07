@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { ToastContainer } from '../components/common/ToastContainer';
 
 export type ToastType = 'success' | 'error' | 'info';
 
@@ -55,6 +56,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }}
     >
       {children}
+      <ToastContainer />
     </ToastContext.Provider>
   );
 };
