@@ -89,7 +89,7 @@ class Settings(BaseSettings):
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str) and not v.startswith("["):
-            return [i.strip() for i in v.split(",")]
+            return [i.strip() for i in v.split(",") if i.strip()]
         elif isinstance(v, str) and v.startswith("["):
             return json.loads(v)
         elif isinstance(v, list):
